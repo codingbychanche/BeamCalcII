@@ -1,8 +1,7 @@
 package org.berthold.beamCalc;
-
 /**
  * Describes any error occurred while solving.
- * Error objects are instanced by {@link Solve} class.
+ * Error objects are instanced by {@link BeamSolver} class.
  * 
  * @param 	originOfError		What caused the problem? Load, Bearing.....?
  * @param	indexOfError		Index of element in list in which it was stored.

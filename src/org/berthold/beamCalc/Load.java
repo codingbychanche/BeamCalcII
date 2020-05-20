@@ -4,27 +4,18 @@ package org.berthold.beamCalc;
  * 
  * Defines a single or a line load in [N] acting on a {@link Beam}
  *
- * Sign: 
- * -----
+ * Sign:<p> 
+ *
  * Vertical loads: Force acting downwards (-) Load acting upwards (+).
  * Horizontal force acts to the left (+), force acts to the right (-)
  * 
- * Angle in degrees: 
- * -----------------
- * 
- *                +/-0
- *                  |  
- *             -45  |  +45
- *          -90 ----+---- +90
- *             -135 |  +135
- *                  |
- *                +180
+ * Angle in degrees:<p>
  *                
  * Left side angles range from 0 to -179 deg, counterclokwise.
  * Right side angles range from 0 to 180 deg, clockwise.
  *                  
- * Samples:
- * --------
+ * Samples<p>
+ * 
  * 		+90 deg. => load acting from right to left, horizontally
  * 		+45 deg. => load acting diagonally from upper right to bottom left
  *      +135 deg. ==> same as +45 but acting from lower right to upper left
@@ -38,8 +29,6 @@ package org.berthold.beamCalc;
  * @see		Beam
  * @author 	Berthold
  */
-import java.util.Comparator;
-
 public class Load  implements  Comparable <Load>{
 	private String nameOfLoad;
 	private double force_N;
@@ -68,7 +57,7 @@ public class Load  implements  Comparable <Load>{
 	 * Included this to make updates of projects using older versions 
 	 * of this library easier.
 	 */
-	public Load(String nameOfLoad,double force_N, double distanceFromLeftEndOfBeam_m, double lengthOfLineLoad_m,boolean includeThisLoadIntoCaclulation,boolean thisLoadHasAnError) {
+	public Load(String nameOfLoad,double force_N, double distanceFromLeftEndOfBeam_m, double lengthOfLineLoad_m,boolean includeThisLoadIntoCaclulation,boolean thisLoadHasAnError, double angleOfLoad_degrees) {
 		this.nameOfLoad=nameOfLoad;
 		this.force_N = force_N;
 		this.distanceFromLeftEndOfBeam_m = distanceFromLeftEndOfBeam_m;
