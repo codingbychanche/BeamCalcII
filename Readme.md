@@ -16,7 +16,7 @@ Name:F2 Magnitute:2.0 Lengtht:0.0
 Bearings sorted by distance from left end of beam:
 Bearing 0.0
 Bearing 3.5
-Max load:5.0
+Max load:5.0 
 
 
 
