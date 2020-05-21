@@ -16,16 +16,10 @@ package org.berthold.beamCalc;
  *                  
  * Samples<p>
  * 
- * 		+90 deg. => load acting from right to left, horizontally
- * 		+45 deg. => load acting diagonally from upper right to bottom left
- *      +135 deg. ==> same as +45 but acting from lower right to upper left
+ * 		+90 deg.  load acting from right to left, horizontally
+ * 		+45 deg.  load acting diagonally from upper right to bottom left
+ *      +135 deg. same as +45 but acting from lower right to upper left
  *      A  negative load at an angle of 180 deg. is the same as a positive load acting at 0 deg.
- * 
- * 
- * @param	distanceFromLeftEndOfBeam_m Position of load relative to left end of beam.
- * @param	lengthOfLineLoad_m If=0 it is a single load. If > 0 it is a line load.
- * @param	angleOfLoad_degrees
- * @param	includeThisLoadIntoCalculation Set to 'true' if load should be included when solving
  * @see		Beam
  * @author 	Berthold
  */
@@ -38,9 +32,16 @@ public class Load  implements  Comparable <Load>{
 	private boolean includeThisLoadIntoCaclulation;
 	private boolean thisLoadHasAnError;
 
-	/*
-	 * Create a single force or a line load.
-	 * This constructor requires all paramters to be passed.
+	/**
+	 * Create a load acting on the beam.
+	 * 
+	 * @param nameOfLoad						Any name allowed (F1, q1 etc..).
+	 * @param force_N							The force acting (-) downwards. (+) upwards.
+	 * @param distanceFromLeftEndOfBeam_m		Position of force acting.
+	 * @param angleOfLoad_degrees				Angle.
+	 * @param lengthOfLineLoad_m				Length, if line load.
+	 * @param includeThisLoadIntoCaclulation	Use where aplicable....
+	 * @param thisLoadHasAnError				Use where aplicable.... 
 	 */
 	public Load(String nameOfLoad,double force_N, double distanceFromLeftEndOfBeam_m, double angleOfLoad_degrees,double lengthOfLineLoad_m,boolean includeThisLoadIntoCaclulation,boolean thisLoadHasAnError) {
 		this.nameOfLoad=nameOfLoad;

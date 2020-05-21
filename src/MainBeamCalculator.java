@@ -26,7 +26,7 @@ public class MainBeamCalculator {
 		myBeam.addLoad(new Load("F1",		-2,		1.25,		0,		0));
 		myBeam.addLoad(new Load("F2",		 2,		2.5,		0,		0));
 		myBeam.addLoad(new Load("q",		-5,		0,			0,		3.5));
-		BeamResult result = BeamSolver.getResults(myBeam);
+		BeamResult result = BeamSolver.getResults(myBeam,"2f");
 
 		if (result.getErrorCount() == 0) {
 			System.out.println("Beam. Loads:" + myBeam.getNumberOfLoads());

@@ -6,7 +6,6 @@ package org.berthold.beamCalc;
  * of the {@link Beam} it is supporting.
  * 
  * @see		Beam
- * @param	distanceFromLeftEndOfBeam_m
  * @author	Berthold
  */
 
@@ -16,9 +15,9 @@ public class Bearing implements Comparable <Bearing>{
 	private double distanceFromLeftEndOfBeam_m;
 
 	/**
-	 * Quick one, just pass the only parameter necessary...
+	 * Quick one, just pass the one and only parameter absulutely
+	 * necessary.
 	 * 
-	 * @param nameOfBearing
 	 * @param distanceFromLeftEndOfBeam_m
 	 */
 	public Bearing(double distanceFromLeftEndOfBeam_m) {

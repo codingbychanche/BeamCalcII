@@ -64,7 +64,7 @@ public class BeamResult {
 	 * Adds a mathematical term showing the solution in detail.
 	 * This method is invoked by the {@link BeamSolver} class
 	 * 
-	 * @param solutionTermForRightBearing
+	 * @param solutionTermForRightBearing 	Mathematical term containing an in detail slution.
 	 */
 	public void addSolutionTermForRightBearing(String solutionTermForRightBearing){
 		this.solutionTermForRightBearing=solutionTermForRightBearing;
@@ -74,7 +74,7 @@ public class BeamResult {
 	 * Returns the mathematical term containing the solution
 	 * for the resulting force at the rightmost bearing of the beam.
 	 * 
-	 * @return
+	 * @return Term with solution
 	 */
 	public String getSolutionTermForRightBearing(){
 		return solutionTermForRightBearing;
@@ -84,7 +84,7 @@ public class BeamResult {
 	 * Adds a mathematical term showing the solution in detail.
 	 * This method is invoked by the {@link BeamSolver} class
 	 * 
-	 * @param solutionTermForRightBearing
+	 * @param solutionTermForLeftBearing Term containing a detailed solution.
 	 */
 	public void addSolutionTermForLeftBearing(String solutionTermForLeftBearing){
 		this.solutionTermForLeftBearing=solutionTermForLeftBearing;
@@ -94,7 +94,7 @@ public class BeamResult {
 	 * Returns the mathematical term containing the solution
 	 * for the resulting force at the leftmost bearing of the beam.
 	 * 
-	 * @return
+	 * @return	Detailed solution for the left bearing
 	 */
 	public String getSolutionTermForLeftBearing(){
 		return solutionTermForLeftBearing;

@@ -21,9 +21,6 @@ package org.berthold.beamCalc;
  * Resulting force at right bearing is calculated by solving this equation:
  * 		SummOfVerticalForces=0=F_Left-F1-F2-....-Fn+F_Right
  *
- * @param 	beam A simply supported {@link Beam} with two {@link Bearing}'s and at least one {@link Load}
- * @return	{@link Result}
- * @see 	Beam, Result
  * @author 	Berthold
  *
  */
@@ -32,10 +29,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BeamSolver {
-	
-	public static int NUMBER_OF_BEARINGS=2;
 
-	public static BeamResult getResults(Beam beam) {
+	public static int NUMBER_OF_BEARINGS = 2;
+
+	/**
+	 * Solves a simply supported beam.
+	 * 
+	 * @param beam			A simply supported {@link Beam} with two {@link Bearing}'s and at least one {@link Load}
+	 * @param floatFormat 	Float Format. Determines the decimal places used within the term containing the detailed solution.
+	 * @return {@link BeamResult}
+	 */
+	public static BeamResult getResults(Beam beam,String floatFormat) {
 
 		/*
 		 * Init
@@ -44,37 +48,37 @@ public class BeamSolver {
 		double spaceBetweenBearings_m = 0;
 		double torqueSum = 0;
 		double loadSumVertical = 0;
-		double loadSumHorizontal=0;
+		double loadSumHorizontal = 0;
 		Load load;
-		double verticalLoad,horizontalLoad; // if angle of load is>0, split load in H and V.
-
+		double verticalLoad, horizontalLoad; 	// if angle of load is>0, split
+												// load in H and V.
 		/*
 		 * Get and check bearings
 		 */
 
 		// Sort bearings by distance from left end of beam....
-		List <Bearing> bearingsSorted=new ArrayList<Bearing>();
-		bearingsSorted=beam.getBearingsSortedByDistanceFromLeftEndOfBeamDesc();
+		List<Bearing> bearingsSorted = new ArrayList<Bearing>();
+		bearingsSorted = beam.getBearingsSortedByDistanceFromLeftEndOfBeamDesc();
 		Bearing leftBearing = bearingsSorted.get(0);
 		Bearing rightBearing = bearingsSorted.get(1);
-		
+
 		// Check if bearing is inside beam length
 		if (beam.isInsideOfBeamLength(leftBearing.getDistanceFromLeftEndOfBeam_m())
 				&& beam.isInsideOfBeamLength(rightBearing.getDistanceFromLeftEndOfBeam_m())) {
 			spaceBetweenBearings_m = Math
 					.abs(leftBearing.getDistanceFromLeftEndOfBeam_m() - rightBearing.getDistanceFromLeftEndOfBeam_m());
 		} else {
-			BeamCalcError error=new BeamCalcError(BeamCalcError.BEARING_ERROR,0,"Bearing outside of beam");
+			BeamCalcError error = new BeamCalcError(BeamCalcError.BEARING_ERROR, 0, "Bearing outside of beam");
 			result.addError(error);
 		}
-	
+
 		// Prepeare string which will contain the solution in detail.
-		StringBuilder termForSolutionAtLeftBearing=new StringBuilder();
-		termForSolutionAtLeftBearing.append(bearingsSorted.get(0).getNameOfBearing()+"=");
-		
-		StringBuilder termForSolutionAtRightBearing=new StringBuilder();
-		termForSolutionAtRightBearing.append(bearingsSorted.get(1).getNameOfBearing()+"=");
-		
+		StringBuilder termForSolutionAtLeftBearing = new StringBuilder();
+		termForSolutionAtLeftBearing.append(bearingsSorted.get(0).getNameOfBearing() + "=(");
+
+		StringBuilder termForSolutionAtRightBearing = new StringBuilder();
+		termForSolutionAtRightBearing.append(bearingsSorted.get(1).getNameOfBearing() + "=");
+
 		// Get and check loads, calculate resultant forces at left and right
 		// bearing
 		for (int i = 0; i <= beam.getNumberOfLoads() - 1; i++) {
@@ -82,50 +86,60 @@ public class BeamSolver {
 
 			if (beam.isInsideOfBeamLength(load.getDistanceFromLeftEndOfBeam_m()) && beam
 					.isInsideOfBeamLength(load.getDistanceFromLeftEndOfBeam_m() + load.getLengthOfLineLoad_m())) {
+
 				if (load.getLengthOfLineLoad_m() == 0) {
 
+					//
 					// Load is a single load
-					double angleOfLoadInRadians=load.getAngleOfLoad_degrees()*Math.PI/180;
-					
-					// If load is not acting straight downwards or upwards, split
-					// load in vertical and horizontal part and increase horizontal
+					//
+					double angleOfLoadInRadians = load.getAngleOfLoad_degrees() * Math.PI / 180;
+
+					// If load is not acting straight downwards or upwards,
+					// split
+					// load in vertical and horizontal part and increase
+					// horizontal
 					// load sum.
-					if (load.getAngleOfLoad_degrees()!=0){
-						
-						verticalLoad=load.getForce_N()*Math.cos(angleOfLoadInRadians);
-						horizontalLoad=load.getForce_N()*Math.sin(angleOfLoadInRadians)*(-1);
-						loadSumHorizontal = loadSumHorizontal +horizontalLoad;
+					if (load.getAngleOfLoad_degrees() != 0) {
+
+						verticalLoad = load.getForce_N() * Math.cos(angleOfLoadInRadians);
+						horizontalLoad = load.getForce_N() * Math.sin(angleOfLoadInRadians) * (-1);
+						loadSumHorizontal = loadSumHorizontal + horizontalLoad;
 
 					} else
-						// Load acting vertical up/ down. 
-						verticalLoad=load.getForce_N();
-					
-					loadSumVertical = loadSumVertical +verticalLoad;
+						// Load acting vertical up/ down.
+						verticalLoad = load.getForce_N();
+
+					loadSumVertical = loadSumVertical + verticalLoad;
 					torqueSum = torqueSum + verticalLoad
 							* (rightBearing.getDistanceFromLeftEndOfBeam_m() - load.getDistanceFromLeftEndOfBeam_m());
-					
+
 					// Build solution term
-					String p=partOfTerm(verticalLoad,rightBearing.getDistanceFromLeftEndOfBeam_m() - load.getDistanceFromLeftEndOfBeam_m(),beam,i);
+					String p = partOfTermForSingleLoad(verticalLoad,
+							rightBearing.getDistanceFromLeftEndOfBeam_m() - load.getDistanceFromLeftEndOfBeam_m(), beam,
+							i);
 					termForSolutionAtLeftBearing.append(p);
-				
+
 				} else {
 					//
 					// Load is line load
 					//
-					double resultandForce_N = load.getForce_N() * load.getLengthOfLineLoad_m();
+					double lineLoad_N = load.getForce_N();
+					double resultandForce_N = lineLoad_N * load.getLengthOfLineLoad_m();
 					double distanceOfResultandForceFromLeftEndOfbeam_m = (load.getDistanceFromLeftEndOfBeam_m())
 							+ load.getLengthOfLineLoad_m() / 2;
 					loadSumVertical = loadSumVertical + resultandForce_N;
 					torqueSum = torqueSum + resultandForce_N * (rightBearing.getDistanceFromLeftEndOfBeam_m()
 							- distanceOfResultandForceFromLeftEndOfbeam_m);
-					
+
 					// Build soulution term.
-					String p=partOfTerm(resultandForce_N,distanceOfResultandForceFromLeftEndOfbeam_m,beam,i);
+					String p = partOfTermForLineLoad(lineLoad_N, load.getLengthOfLineLoad_m(),
+							distanceOfResultandForceFromLeftEndOfbeam_m, beam, i);
 					termForSolutionAtLeftBearing.append(p);
 				}
 			} else {
-				BeamCalcError error=new BeamCalcError(BeamCalcError.LOAD_ERROR,i,"Load #"+i+1+" acts "+load.getDistanceFromLeftEndOfBeam_m()+
-						" m from left end of Beam. Beam length is "+beam.getLength()+" m");
+				BeamCalcError error = new BeamCalcError(BeamCalcError.LOAD_ERROR, i,
+						"Load #" + i + 1 + " acts " + load.getDistanceFromLeftEndOfBeam_m()
+								+ " m from left end of Beam. Beam length is " + beam.getLength() + " m");
 				result.addError(error);
 			}
 		}
@@ -133,69 +147,103 @@ public class BeamSolver {
 			result.setResultingForceAtLeftBearingBearing_N(-1 * torqueSum / spaceBetweenBearings_m);
 			result.setResultingForceAtRightBearing_N(-1 * loadSumVertical - result.getResultingForceAtLeftBearing_N());
 			result.setSumOfHorizontalForcesIn_N(loadSumHorizontal);
-			
-			// Finish strings with detail solution and add them to the result- instance.
+
+			// Finish strings with detail solution and add them to the result-
+			// instance.
 			// For left bearing
-			termForSolutionAtLeftBearing.append(")/"+beam.getLength()+"m = "+result.getResultingForceAtLeftBearing_N()+"N");
-			result.addSolutionTermForLeftBearing(termForSolutionAtLeftBearing.toString());
 			
-	
+			String resultingForceAtLeftBearingFormatet=String.format("%."+floatFormat, result.getResultingForceAtLeftBearing_N());
+			termForSolutionAtLeftBearing
+					.append(")/" + beam.getLength() + "m = " + resultingForceAtLeftBearingFormatet + "N");
+			result.addSolutionTermForLeftBearing(termForSolutionAtLeftBearing.toString());
+
 			// For right bearing
-			String finalTerm=solutionTermForRightBearing(beam,result,termForSolutionAtRightBearing);
-			result.addSolutionTermForRightBearing(finalTerm);	
+			String finalTerm = solutionTermForRightBearing(beam, result, termForSolutionAtRightBearing,floatFormat);
+			result.addSolutionTermForRightBearing(finalTerm);
 		}
 		return result;
 	}
-	
+
 	/*
-	 * Helps building the term showing the solution for the right bearing.
+	 * Helps building the term showing the solution for the left bearing for
+	 * single loads.
 	 * 
 	 * Returns "force x distance +" if more than two forces acting or
 	 * "force x distance " if only one force is acting or the force is the last
 	 * one acting.
 	 */
-	private static String partOfTerm(double force_N,double distance_m,Beam beam,int indexOfLoad){
-		String factor=addParathesesIfFacIsNeg(-1*force_N+"N x "+distance_m+"m");
-		
-		return factor+"+";
+	private static String partOfTermForSingleLoad(double force_N, double distance_m, Beam beam, int indexOfLoad) {
+		String factor = -1 * force_N + "N x " + distance_m + "m";
+
+		if (-1 * force_N < 0)
+			factor = addParatheses(factor);
+
+		if (indexOfLoad < beam.getNumberOfLoads()-1)
+			return factor + "+";
+		else
+			return factor;
 	}
-	
+
 	/*
-	 * This builds the string containing the solution for the right bearing
-	 * which is obtained by solving following equation:
+	 * Helps building the term showing the solution for the left bearig for line
+	 * loads.
+	 */
+	private static String partOfTermForLineLoad(double lineLoad_N, double lengthOfLineLoad_m,
+			double resultantDistanceFromLeftEnd_m, Beam beam, int indexOfLoad) {
+		String factor = -1 * lineLoad_N + " N/m x " + lengthOfLineLoad_m + "m x " + resultantDistanceFromLeftEnd_m
+				+ "m";
+
+		if (-1 * lineLoad_N < 0)
+			factor = addParatheses(factor);
+
+		if (indexOfLoad < beam.getNumberOfLoads()-1)
+			return factor + "+";
+		else
+			return factor;
+	}
+
+	/*
+	 * This builds the string containing the complete solution for the right
+	 * bearing which is obtained by solving following equation:
 	 * 
 	 * SummOfVerticalForces=0=F_Left-F1-F2-....-Fn+F_Right
 	 */
-	private static String solutionTermForRightBearing(Beam beam,BeamResult result,StringBuilder termForSolutionAtLeftBearing){
-		
+	private static String solutionTermForRightBearing(Beam beam, BeamResult result,
+			StringBuilder termForSolutionAtLeftBearing,String floatFormat) {
+
 		String summand;
-		double loadAtRightBearing=result.getResultingForceAtRightBearing_N();
-		double loadAtLeftBearing=result.getResultingForceAtLeftBearing_N();
-		for (int i=0;i<=beam.getNumberOfLoads()-1;i++){
-			Load l=beam.getLoad(i);
-			
-			double force=l.getForce_N()*-1; // '*-1' => because all known paramters are broghth to the other side of the equation...
-			
-			if (l.getLengthOfLineLoad_m()>0)
-				summand=force+"x"+l.getLengthOfLineLoad_m()+"m";
-			else
-				summand=force+"N";
-			
-			if (force<0)
-				summand=addParathesesIfFacIsNeg(summand);
-			
-			termForSolutionAtLeftBearing.append(summand+"+");
-		}
-		termForSolutionAtLeftBearing.append(loadAtLeftBearing+"N = "+loadAtRightBearing+"N");
+		double loadAtRightBearing = result.getResultingForceAtRightBearing_N();
+		double loadAtLeftBearing = result.getResultingForceAtLeftBearing_N();
 		
+		String loadAtLeftBearingFormated=String.format("%."+floatFormat, loadAtLeftBearing);
+		for (int i = 0; i <= beam.getNumberOfLoads() - 1; i++) {
+			Load l = beam.getLoad(i);
+
+			double force = l.getForce_N() * -1; // '*-1' => because all known
+												// paramters are broghth to the
+												// other side of the equation...
+
+			if (l.getLengthOfLineLoad_m() > 0)
+				summand = force + " x " + l.getLengthOfLineLoad_m() + "m";
+			else
+				summand = force + "N";
+
+			if (force < 0)
+				summand = addParatheses(summand);
+
+			termForSolutionAtLeftBearing.append(summand + "+");
+		}
+		String loadAtRightBearingFormatet=String.format("%."+floatFormat, loadAtRightBearing);
+		termForSolutionAtLeftBearing.append(loadAtLeftBearingFormated + "N = " + loadAtRightBearingFormatet + "N");
+
 		return termForSolutionAtLeftBearing.toString();
 	}
-	
+
 	/*
 	 * Encloses a summand of a term in paratheses.
 	 * 
 	 */
-	private static String addParathesesIfFacIsNeg(String summand){
-		return summand="("+summand+")";
+	private static String addParatheses(String summand) {
+		return summand = "(" + summand + ")";
 	}
 }
