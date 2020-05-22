@@ -72,7 +72,7 @@ public class BeamSolver {
 			result.addError(error);
 		}
 
-		// Prepeare string which will contain the solution in detail.
+		// Prepeare string which will contain the term for the solution in detail.
 		StringBuilder termForSolutionAtLeftBearing = new StringBuilder();
 		termForSolutionAtLeftBearing.append(bearingsSorted.get(0).getNameOfBearing() + "=(");
 
@@ -89,9 +89,9 @@ public class BeamSolver {
 
 				if (load.getLengthOfLineLoad_m() == 0) {
 
-					//
-					// Load is a single load
-					//
+					/*
+					 * Load is a single load
+					 */
 					double angleOfLoadInRadians = load.getAngleOfLoad_degrees() * Math.PI / 180;
 
 					// If load is not acting straight downwards or upwards,
@@ -120,20 +120,25 @@ public class BeamSolver {
 					termForSolutionAtLeftBearing.append(p);
 
 				} else {
-					//
-					// Load is line load
-					//
+					
+					/*
+					 * Load is line load
+					 */
 					double lineLoad_N = load.getForce_N();
 					double resultandForce_N = lineLoad_N * load.getLengthOfLineLoad_m();
+					
 					double distanceOfResultandForceFromLeftEndOfbeam_m = (load.getDistanceFromLeftEndOfBeam_m())
 							+ load.getLengthOfLineLoad_m() / 2;
+					
+					double lengthOfLeverToRightBearing_m=rightBearing.getDistanceFromLeftEndOfBeam_m()
+							- distanceOfResultandForceFromLeftEndOfbeam_m;
+					
+					// Calc torque- sum
 					loadSumVertical = loadSumVertical + resultandForce_N;
-					torqueSum = torqueSum + resultandForce_N * (rightBearing.getDistanceFromLeftEndOfBeam_m()
-							- distanceOfResultandForceFromLeftEndOfbeam_m);
+					torqueSum = torqueSum + resultandForce_N * lengthOfLeverToRightBearing_m;
 
 					// Build soulution term.
-					String p = partOfTermForLineLoad(lineLoad_N, load.getLengthOfLineLoad_m(),
-							distanceOfResultandForceFromLeftEndOfbeam_m, beam, i);
+					String p = partOfTermForLineLoad(lineLoad_N, load.getLengthOfLineLoad_m(),lengthOfLeverToRightBearing_m, beam, i);
 					termForSolutionAtLeftBearing.append(p);
 				}
 			} else {
@@ -148,25 +153,29 @@ public class BeamSolver {
 			result.setResultingForceAtRightBearing_N(-1 * loadSumVertical - result.getResultingForceAtLeftBearing_N());
 			result.setSumOfHorizontalForcesIn_N(loadSumHorizontal);
 
-			// Finish strings with detail solution and add them to the result-
-			// instance.
-			// For left bearing
 			
+			/* 
+			 * Finish strings with detail solution and add them to the result- instance
+			 */
+
+			// For the left bearing
 			String resultingForceAtLeftBearingFormatet=String.format("%."+floatFormat, result.getResultingForceAtLeftBearing_N());
-			termForSolutionAtLeftBearing
-					.append(")/" + beam.getLength() + "m = " + resultingForceAtLeftBearingFormatet + "N");
+			termForSolutionAtLeftBearing.append(")/" + beam.getLength() + "m = " + resultingForceAtLeftBearingFormatet + "N");
 			result.addSolutionTermForLeftBearing(termForSolutionAtLeftBearing.toString());
 
-			// For right bearing
+			// For the right bearing
 			String finalTerm = solutionTermForRightBearing(beam, result, termForSolutionAtRightBearing,floatFormat);
+			
+			// Finished....
 			result.addSolutionTermForRightBearing(finalTerm);
 		}
 		return result;
 	}
 
 	/*
-	 * Helps building the term showing the solution for the left bearing for
-	 * single loads.
+	 * Left Bearing, for single loads.
+	 * 
+	 * Helps building the term showing the solution for the left bearing. 
 	 * 
 	 * Returns "force x distance +" if more than two forces acting or
 	 * "force x distance " if only one force is acting or the force is the last
@@ -177,7 +186,6 @@ public class BeamSolver {
 
 		if (-1 * force_N < 0)
 			factor = addParatheses(factor);
-
 		if (indexOfLoad < beam.getNumberOfLoads()-1)
 			return factor + "+";
 		else
@@ -185,8 +193,9 @@ public class BeamSolver {
 	}
 
 	/*
-	 * Helps building the term showing the solution for the left bearig for line
-	 * loads.
+	 * Left bearing, for line loads. 
+	 * 
+	 * Helps building the term showing the solution for the left bearig. 
 	 */
 	private static String partOfTermForLineLoad(double lineLoad_N, double lengthOfLineLoad_m,
 			double resultantDistanceFromLeftEnd_m, Beam beam, int indexOfLoad) {
@@ -195,7 +204,6 @@ public class BeamSolver {
 
 		if (-1 * lineLoad_N < 0)
 			factor = addParatheses(factor);
-
 		if (indexOfLoad < beam.getNumberOfLoads()-1)
 			return factor + "+";
 		else
@@ -203,6 +211,8 @@ public class BeamSolver {
 	}
 
 	/*
+	 * Right bearing.
+	 * 
 	 * This builds the string containing the complete solution for the right
 	 * bearing which is obtained by solving following equation:
 	 * 
@@ -215,7 +225,8 @@ public class BeamSolver {
 		double loadAtRightBearing = result.getResultingForceAtRightBearing_N();
 		double loadAtLeftBearing = result.getResultingForceAtLeftBearing_N();
 		
-		String loadAtLeftBearingFormated=String.format("%."+floatFormat, loadAtLeftBearing);
+		// Get all actiong forces, change their leading sign and add them to the 
+		// string containing the term with the solution.
 		for (int i = 0; i <= beam.getNumberOfLoads() - 1; i++) {
 			Load l = beam.getLoad(i);
 
@@ -233,8 +244,20 @@ public class BeamSolver {
 
 			termForSolutionAtLeftBearing.append(summand + "+");
 		}
-		String loadAtRightBearingFormatet=String.format("%."+floatFormat, loadAtRightBearing);
-		termForSolutionAtLeftBearing.append(loadAtLeftBearingFormated + "N = " + loadAtRightBearingFormatet + "N");
+	
+		// Change leading sign of resulting force at left bearing 
+		// and, if it changes to '-', add paratheses
+		loadAtLeftBearing=loadAtLeftBearing*-1;
+		String loadAtLeftBearingFormatted=String.format("%."+floatFormat, loadAtLeftBearing);
+	
+		if (loadAtLeftBearing<0)
+			loadAtLeftBearingFormatted=addParatheses(loadAtLeftBearingFormatted);
+		
+		// Format resulting force at right bearing
+		String loadAtRightBearingFormatted=String.format("%."+floatFormat, loadAtRightBearing);
+		
+		// The completed term:
+		termForSolutionAtLeftBearing.append(loadAtLeftBearingFormatted + " = " + loadAtRightBearingFormatted + "N");
 
 		return termForSolutionAtLeftBearing.toString();
 	}

@@ -22,10 +22,10 @@ public class MainBeamCalculator {
 		//myBeam.addLoad(new Load("q1",		-3,		0.0,		0,		2.0));
 		//myBeam.addLoad(new Load("F1",		-1.5,	3.5,		0,		0));
 		
-		//myBeam.addLoad(new Load("q1",		-2,		1.5,		0,		0));
-		myBeam.addLoad(new Load("F1",		-2,		1.25,		0,		0));
-		myBeam.addLoad(new Load("F2",		 2,		2.5,		0,		0));
-		myBeam.addLoad(new Load("q",		-5,		0,			0,		3.5));
+		myBeam.addLoad(new Load("q1",		-7,		1.0,		0,		2));
+		myBeam.addLoad(new Load("q2",		-2,		1.5,		0,		1));
+		myBeam.addLoad(new Load("F3",		-3.6,	2.5,		0,		0));
+		myBeam.addLoad(new Load("F4",		5.5,	1.8,		0,		0));
 		BeamResult result = BeamSolver.getResults(myBeam,"2f");
 
 		if (result.getErrorCount() == 0) {
