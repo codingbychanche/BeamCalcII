@@ -36,7 +36,8 @@ public class BeamSolver {
 	 * Solves a simply supported beam.
 	 * 
 	 * @param beam			A simply supported {@link Beam} with two {@link Bearing}'s and at least one {@link Load}
-	 * @param floatFormat 	Float Format. Determines the decimal places used within the term containing the detailed solution.
+	 * @param floatFormat 	Float Format. Determines the decimal places used within the term containing the detailed solution.<br>
+	 * 						Example: "2f" means two decimal places....
 	 * @return {@link BeamResult}
 	 */
 	public static BeamResult getResults(Beam beam,String floatFormat) {
@@ -160,7 +161,7 @@ public class BeamSolver {
 
 			// For the left bearing
 			String resultingForceAtLeftBearingFormatet=String.format("%."+floatFormat, result.getResultingForceAtLeftBearing_N());
-			termForSolutionAtLeftBearing.append(")/" + beam.getLength() + "m = " + resultingForceAtLeftBearingFormatet + "N");
+			termForSolutionAtLeftBearing.append(")/" + spaceBetweenBearings_m + "m = " + resultingForceAtLeftBearingFormatet + "N");
 			result.addSolutionTermForLeftBearing(termForSolutionAtLeftBearing.toString());
 
 			// For the right bearing
