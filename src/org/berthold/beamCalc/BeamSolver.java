@@ -241,7 +241,7 @@ public class BeamSolver {
 				summand = force + "N";
 
 			if (force < 0)
-				summand = addParatheses(summand+"N");
+				summand = addParatheses(summand);
 
 			termForSolutionAtLeftBearing.append(summand + " + ");
 		}
