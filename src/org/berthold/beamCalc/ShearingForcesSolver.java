@@ -1,15 +1,6 @@
 package org.berthold.beamCalc;
 /**
- * This returns a list of coordinates where the load magnitute changes. Left end of beam is x=0.
- * 
- * 		F1		F2
- *  x----|-------|------------x
- *  	 |		 |
- *  | l1 |  l2   |      l3    |
- *  
- *  
- * 
- * @author Berthold
+ * Calculates the shearing forces magintutes.
  *
  */
 
@@ -18,6 +9,21 @@ import java.util.List;
 
 public class ShearingForcesSolver {
 
+	/**
+	 * This returns a list of coordinates where the load magnitute changes. Left
+	 * end of beam is x=0.
+	 * <p>
+	 * 
+	 * @param beam
+	 *            {@link Beam} object to solve.
+	 * @param result
+	 *            {@link BeamResult} object containing the valid result of the
+	 *            {@link Beam} parameter
+	 * @return A new {@link Beam} object containing the shearing force
+	 *         magnitutes.
+	 * 
+	 * @author Berthold
+	 */
 	public static Beam solve(Beam beam, BeamResult result) {
 
 		// A new beam is used in order to calculate the shearing forces.
@@ -37,7 +43,7 @@ public class ShearingForcesSolver {
 
 		bearing = beam.getBearing(1);
 		distanceFromLeftEnd = bearing.getDistanceFromLeftEndOfBeam_m();
-		Load supportRight_N = new Load("FB", result.getResultingForceAtRightBearing_N(), distanceFromLeftEnd, 0,0);
+		Load supportRight_N = new Load("FB", result.getResultingForceAtRightBearing_N(), distanceFromLeftEnd, 0, 0);
 		Qbeam.addLoad(supportRight_N);
 
 		// Convert all loads to single loads
@@ -45,13 +51,14 @@ public class ShearingForcesSolver {
 		Load singleLoad_N;
 		for (int i = 0; i <= n; i++) {
 			Load l = beam.getLoad(i);
-			
+
 			if (l.getLengthOfLineLoad_m() > 0) {
-				//						Name	Force		Dist		Ang.	Length
-				singleLoad_N = new Load("-", l.getForce_N(), l.getDistanceFromLeftEndOfBeam_m(),0,l.getLengthOfLineLoad_m());
+				// Name Force Dist Ang. Length
+				singleLoad_N = new Load("-", l.getForce_N(), l.getDistanceFromLeftEndOfBeam_m(), 0, l.getLengthOfLineLoad_m());
 				Qbeam.addLoad(singleLoad_N);
-				
-				singleLoad_N = new Load("-", l.getForce_N(),l.getDistanceFromLeftEndOfBeam_m() + l.getLengthOfLineLoad_m(), 0, l.getLengthOfLineLoad_m());
+
+				singleLoad_N = new Load("-", l.getForce_N(),
+						l.getDistanceFromLeftEndOfBeam_m() + l.getLengthOfLineLoad_m(), 0, 0);
 				Qbeam.addLoad(singleLoad_N);
 			} else {
 				singleLoad_N = new Load("-", l.getForce_N(), l.getDistanceFromLeftEndOfBeam_m(), 0,
@@ -59,14 +66,9 @@ public class ShearingForcesSolver {
 				Qbeam.addLoad(singleLoad_N);
 			}
 		}
-		
 		// Get single loads sorted...
-		List<Load> singleLoads_N = new ArrayList();
-		singleLoads_N = Qbeam.getLoadsSortedByDistanceFromLeftSupportDesc();
-
-		// test
-		for (Load sl : singleLoads_N)
-			System.out.println("SINGLE:" + sl.getForce_N() + "Dist:" + sl.getDistanceFromLeftEndOfBeam_m());
+		List<Load> singleLoadsSorted_N = new ArrayList<>();
+		singleLoadsSorted_N = Qbeam.getLoadsSortedByDistanceFromLeftSupportDesc();
 
 		// Calculate sections between single loads
 		List<Double> loadSections = new ArrayList<>();
@@ -74,59 +76,54 @@ public class ShearingForcesSolver {
 		double posOfNextLoad_m = 0;
 		double sectionLength_m;
 
-	
-		int sizeOfSingleLoads = singleLoads_N.size()-1;
+		int sizeOfSingleLoads = singleLoadsSorted_N.size() - 1;
 		for (int i = 0; i < sizeOfSingleLoads; i++) {
-			posOfLoad_m = singleLoads_N.get(i).getDistanceFromLeftEndOfBeam_m();
-			posOfNextLoad_m = singleLoads_N.get(i + 1).getDistanceFromLeftEndOfBeam_m();
+			posOfLoad_m = singleLoadsSorted_N.get(i).getDistanceFromLeftEndOfBeam_m();
+			posOfNextLoad_m = singleLoadsSorted_N.get(i + 1).getDistanceFromLeftEndOfBeam_m();
 			sectionLength_m = posOfNextLoad_m - posOfLoad_m;
 			loadSections.add(sectionLength_m);
 		}
 		loadSections.add(0.0);
-		
+
 		// test
 		System.out.println();
 		for (Double ls : loadSections)
 			System.out.println("LOAD SECTION:" + ls);
 		System.out.println();
 
-		// Create a beam containing all shearing forces
-		Beam QbeamSolved = new Beam(Qbeam.getLength());
+		// Create solver table
+		n = singleLoadsSorted_N.size();
+		List<ShearingForcesQTable> qTab = new ArrayList<>();
+		for (int i = 0; i <= n - 1; i++) {
+			singleLoad_N = singleLoadsSorted_N.get(i);
 
-		int numberOfLoads_N = loadSections.size()- 1;
+			double force_N = singleLoad_N.getForce_N();
+			double xstart = singleLoad_N.getDistanceFromLeftEndOfBeam_m();
+			double sectionLength=loadSections.get(i);
+			double length = singleLoad_N.getLengthOfLineLoad_m();
+			
+			if (singleLoad_N.getLengthOfLineLoad_m()==0)
+				sectionLength=0;
+			
+			double xend = singleLoad_N.getDistanceFromLeftEndOfBeam_m() + sectionLength;
+			
+			double q = 0;
 
-		double Qs=0;
-		double Qn = 0;
-		double Qn1;
-		
-		double Dl=0;
-		double distanceFromLeftEndOfBeam=0;
-		for (int i = 0; i <= numberOfLoads_N; i++) {
+			ShearingForcesQTable l = new ShearingForcesQTable(force_N, xstart, xend, length, q);
+			qTab.add(l);
 
-			
-			double lengthOfLineLoad_m = singleLoads_N.get(i).getLengthOfLineLoad_m();
-			Qn1 = singleLoads_N.get(i).getForce_N();
-			Dl = loadSections.get(i);
-			
-			if (lengthOfLineLoad_m == 0) {
-				Qs = Qn+Qn1;
-			} else 	{
-				Qs =Qn+Qn1 * Dl;
-			}
-			distanceFromLeftEndOfBeam=singleLoads_N.get(i).getDistanceFromLeftEndOfBeam_m();
-			
-			
-			System.out.println("Distance from left end:"+distanceFromLeftEndOfBeam+ "    Qn="+Qn+"   Qn+1="+Qn1+" Dl="+Dl+"  Q'="+Qs);
-			Qn=Qs;
 		}
-		
-		// Finaly:
-		// Create a beam containing the shearing forces 
-		Beam beamWithResultingShearingForces=new Beam (beam.getLength());
-		beamWithResultingShearingForces.addBearing(beam.getBearing(0));
-		beamWithResultingShearingForces.addBearing(beam.getBearing(1));
-		
-		
-		return (beamWithResultingShearingForces);
+
+		// test
+		for (ShearingForcesQTable t : qTab) {
+			System.out.println("F=" + t.getLoad_N() + "  xstart=" + t.getxStart_m() + "   xend=" + t.getxEnd_m()
+					+ "   l=" + t.getLegngth_m());
+		}
+
+		// Create a beam containing all shearing forces
+		// Beam QbeamSolved = new Beam(Qbeam.getLength());
+		int numberOfLoads_N = loadSections.size() - 1;
+
+		return (null);
 	}
 }

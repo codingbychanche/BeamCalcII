@@ -13,19 +13,15 @@ public class MainBeamCalculator {
 
 		Beam myBeam = new Beam(3.5);
 
-		myBeam.addBearing(new Bearing("Left bearing",0));
-		myBeam.addBearing(new Bearing("Right bearing",3.5));
+		myBeam.addBearing(new Bearing("Left bearing",1));
+		myBeam.addBearing(new Bearing("Right bearing",3));
 		
 		//						Name	Force		Dist		Ang.	Length
 		//myBeam.addLoad(new Load("F0",		-3,		0.0,		0,		0));
 		//myBeam.addLoad(new Load("F0",		-9,		0.0,		0,		0));
-		//myBeam.addLoad(new Load("q1",		-3,		0.0,		0,		2.0));
-		//myBeam.addLoad(new Load("F1",		-1.5,	3.5,		0,		0));
+		myBeam.addLoad(new Load("q1",		-3,		0.0,		0,		2.0));
+		myBeam.addLoad(new Load("F1",		-1.5,	3.5,		0,		0));
 		
-		myBeam.addLoad(new Load("q1",		-7,		1.0,		0,		2));
-		myBeam.addLoad(new Load("q2",		-2,		1.5,		0,		1));
-		myBeam.addLoad(new Load("F3",		-3.6,	2.5,		0,		0));
-		myBeam.addLoad(new Load("F4",		5.5,	1.8,		0,		0));
 		BeamResult result = BeamSolver.getResults(myBeam,"2f");
 
 		if (result.getErrorCount() == 0) {

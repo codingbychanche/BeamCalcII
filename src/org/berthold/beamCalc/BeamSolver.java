@@ -236,14 +236,14 @@ public class BeamSolver {
 												// other side of the equation...
 
 			if (l.getLengthOfLineLoad_m() > 0)
-				summand = force + " x " + l.getLengthOfLineLoad_m() + "m";
+				summand = force + "N x " + l.getLengthOfLineLoad_m() + "m";
 			else
 				summand = force + "N";
 
 			if (force < 0)
-				summand = addParatheses(summand);
+				summand = addParatheses(summand+"N");
 
-			termForSolutionAtLeftBearing.append(summand + "+");
+			termForSolutionAtLeftBearing.append(summand + " + ");
 		}
 	
 		// Change leading sign of resulting force at left bearing 
@@ -252,7 +252,9 @@ public class BeamSolver {
 		String loadAtLeftBearingFormatted=String.format("%."+floatFormat, loadAtLeftBearing);
 	
 		if (loadAtLeftBearing<0)
-			loadAtLeftBearingFormatted=addParatheses(loadAtLeftBearingFormatted);
+			loadAtLeftBearingFormatted=addParatheses(loadAtLeftBearingFormatted+"N");
+		else
+			loadAtLeftBearingFormatted=loadAtLeftBearing+"N";
 		
 		// Format resulting force at right bearing
 		String loadAtRightBearingFormatted=String.format("%."+floatFormat, loadAtRightBearing);
