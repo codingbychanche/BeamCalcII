@@ -1,15 +1,14 @@
 package org.berthold.beamCalc;
+
 /**
  * Contains the resulting forces at the bearings of an simply supported {@link Beam}.
  * 
- * If errors (e.g. load outside of beam length) occur, an {link Error} object is
+ * If errors (e.g. load outside of beam length) occur, an {@link Error} object is
  * added which contains a description of the problem.
  * 
- * Objects from this class are created by the {@link Solve}- Class
+ * Objects from this class are created by the {@link BeamSolver}- Class
  * 
- * @see		Solve
  * @author 	Berthold
- *
  */
 import java.util.ArrayList;
 import java.util.List;

@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 
+ * @author Berthold
+ *
+ */
 public class Beam {
 	private double lengthOfBeam_m;
 	private List<Bearing> support;
