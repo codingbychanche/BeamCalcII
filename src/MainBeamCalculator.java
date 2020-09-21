@@ -21,7 +21,7 @@ public class MainBeamCalculator {
 		//myBeam.addLoad(new Load("F0",		-9,		0.0,		0,		0));
 		myBeam.addLoad(new Load("q1",		-3,		0.0,		0,		2.0));
 		myBeam.addLoad(new Load("F1",		-1.5,	1.5,		-45,		0));
-		myBeam.addLoad(new Load("F2",		-8.5,	2.5,		0,		0));
+		myBeam.addLoad(new Load("F2",		-2.5,	1.5,		179,		0));
 		
 		BeamResult result = BeamSolver.getResults(myBeam,"2f");
 
@@ -31,6 +31,7 @@ public class MainBeamCalculator {
 					+ result.getResultingForceAtRightBearing_N() + " N.");
 			System.out.println("Horizontal:" + result.getSumOfHorizontalForcesIn_N());
 			
+			System.out.println("Term:"+result.getSolutionTermForHorizontalForces());
 			System.out.println("Term:"+result.getSolutionTermForRightBearing());
 			System.out.println("Term:"+result.getSolutionTermForLeftBearing());
 		} else
@@ -63,7 +64,7 @@ public class MainBeamCalculator {
 	}
 
 	/*
-	 * Show description of all errors occurred.....
+	 * Show a description of all errors occurred.....
 	 */
 	private static void showErrors(BeamResult result) {
 		int errorCount = result.getErrorCount();

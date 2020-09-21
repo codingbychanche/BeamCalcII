@@ -1,7 +1,7 @@
 package org.berthold.beamCalc;
-
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Solves a simply supported beam with single and/ or line loads.
  * 
@@ -9,39 +9,42 @@ import java.util.List;
  * placed arbitrary.
  * 
  * Solver has to check for valid initial conditions. If any of the expected
- * initial conditions are not met (e.g. bearing not inside beam length)
- * result is set to 0 and an {@link Error} object is added to {@link Result}
- * object.
+ * initial conditions are not met (e.g. bearing not inside beam length) result
+ * is set to 0 and an {@link Error} object is added to {@link Result} object.
  * 
- * Vertical Forces: Force, leading sign: (+) Force acts upwards (-) Force
- * acts downwards. Horizontal Forces: Force acts from right to left (+),
- * force acts from left to right (-) Torque, leading sign (+) Clockwise. (-)
- * Anti- clockwise.<p>
+ * Vertical Forces: Force, leading sign: (+) Force acts upwards (-) Force acts
+ * downwards. Horizontal Forces: Force acts from right to left (+), force acts
+ * from left to right (-) Torque, leading sign (+) Clockwise. (-) Anti-
+ * clockwise.
+ * <p>
  * 
- * Single loads may act in an arbitrary angle. 
- * Line loads may only act downwards or upwards. Angle for those loads will
- * be ignored.<p>
+ * Single loads may act in an arbitrary angle. Line loads may only act downwards
+ * or upwards. Angle for those loads will be ignored.
+ * <p>
  * 
- * Solver calculates from left to right by solving the following equation:<p>
- * TorqueSumAtRightBearing=0=F_Leftxl-F1x(l2-x1)-F2x(l2-x2)-....-Fn(l2-xn)<p>
+ * Solver calculates from left to right by solving the following equation:
+ * <p>
+ * TorqueSumAtRightBearing=0=F_Leftxl-F1x(l2-x1)-F2x(l2-x2)-....-Fn(l2-xn)
+ * <p>
  * 
- * Resulting force at right bearing is calculated by solving this equation:<p>
+ * Resulting force at right bearing is calculated by solving this equation:
+ * <p>
  * SummOfVerticalForces=0=F_Left-F1-F2-....-Fn+F_Right
  *
  * @author Berthold
  *
  * 
  * @param beam
- *            A simply supported {@link Beam} with two {@link Bearing}'s and
- *            at least one {@link Load}
+ *            A simply supported {@link Beam} with two {@link Bearing}'s and at
+ *            least one {@link Load}
  * @param floatFormat
- *            Float Format. Determines the decimal places used within the
- *            term containing the detailed solution.<br>
+ *            Float Format. Determines the decimal places used within the term
+ *            containing the detailed solution.<br>
  *            Example: "2f" means two decimal places....
  * @return {@link BeamResult}
  */
 public class BeamSolver {
-	
+
 	public static int NUMBER_OF_BEARINGS = 2; // Not one more yet, sorry.
 
 	public static BeamResult getResults(Beam beam, String floatFormat) {
@@ -72,12 +75,16 @@ public class BeamSolver {
 
 		// Prepeare string which will contain the term for the solution in
 		// detail.
+		String partOfMathTerm; // String holding current mathematical term.
+
 		StringBuilder termForSolutionAtLeftBearing = new StringBuilder();
 		termForSolutionAtLeftBearing.append(bearingsSorted.get(0).getNameOfBearing() + "=(");
+
 		StringBuilder termForSolutionAtRightBearing = new StringBuilder();
 		termForSolutionAtRightBearing.append(bearingsSorted.get(1).getNameOfBearing() + "=");
 
-		String partOfMathTerm; // String holding current mathematical term.
+		StringBuilder termForSolutionOfHorizForce = new StringBuilder();
+		termForSolutionOfHorizForce.append("N=");
 
 		// Get and check loads, calculate resultant forces at left and right
 		// bearing
@@ -87,11 +94,11 @@ public class BeamSolver {
 			if (beam.isInsideOfBeamLength(load.getDistanceFromLeftEndOfBeam_m()) && beam
 					.isInsideOfBeamLength(load.getDistanceFromLeftEndOfBeam_m() + load.getLengthOfLineLoad_m())) {
 
+				/*
+				 * Single load?
+				 */
 				if (load.getLengthOfLineLoad_m() == 0) {
 
-					/*
-					 * Load is a single load
-					 */
 					double angleOfLoadInRadians = load.getAngleOfLoad_degrees() * Math.PI / 180;
 
 					// If load is acting at an angle, split!
@@ -103,17 +110,23 @@ public class BeamSolver {
 						horizontalLoad = load.getForce_N() * Math.sin(angleOfLoadInRadians) * (-1);
 						loadSumHorizontal = loadSumHorizontal + horizontalLoad;
 
-						partOfMathTerm = partOfTermForSingleLoad(load.getForce_N(), load.getAngleOfLoad_degrees(),
+						// Build mathematical term accordingly.
+						// Vertical load
+						partOfMathTerm = FormatSolutionString.partOfTermForSingleLoad(load.getForce_N(), load.getAngleOfLoad_degrees(),
 								rightBearing.getDistanceFromLeftEndOfBeam_m() - load.getDistanceFromLeftEndOfBeam_m(),
 								beam, i);
 						termForSolutionAtLeftBearing.append(partOfMathTerm);
+
+						// Horizontal force.
+						partOfMathTerm = FormatSolutionString.solutionTermForHorizForces(load);
+						termForSolutionOfHorizForce.append(partOfMathTerm);
 
 					} else {
 						// Load acting vertical up/ down.
 						verticalLoad = load.getForce_N();
 
 						// Build solution term
-						partOfMathTerm = partOfTermForSingleLoad(verticalLoad, 0,
+						partOfMathTerm = FormatSolutionString.partOfTermForSingleLoad(verticalLoad, 0,
 								rightBearing.getDistanceFromLeftEndOfBeam_m() - load.getDistanceFromLeftEndOfBeam_m(),
 								beam, i);
 						termForSolutionAtLeftBearing.append(partOfMathTerm);
@@ -143,7 +156,7 @@ public class BeamSolver {
 					torqueSum = torqueSum + resultandForce_N * lengthOfLeverToRightBearing_m;
 
 					// Build soulution term.
-					String p = partOfTermForLineLoad(lineLoad_N, load.getLengthOfLineLoad_m(),
+					String p = FormatSolutionString.partOfTermForLineLoad(lineLoad_N, load.getLengthOfLineLoad_m(),
 							lengthOfLeverToRightBearing_m, beam, i);
 					termForSolutionAtLeftBearing.append(p);
 				}
@@ -164,6 +177,16 @@ public class BeamSolver {
 			 * instance
 			 */
 
+			// For the horizontal forces
+			String sumOfHorizontalLoadsFormated = String.format("%." + floatFormat, loadSumHorizontal);
+			
+			if (loadSumHorizontal != 0)
+				termForSolutionOfHorizForce.append(" = " + sumOfHorizontalLoadsFormated+"N");
+			else 
+				termForSolutionOfHorizForce.append(sumOfHorizontalLoadsFormated+"N");
+			
+			result.addSolutionTermForHorizontalForce(termForSolutionOfHorizForce.toString());
+
 			// For the left bearing
 			String resultingForceAtLeftBearingFormatet = String.format("%." + floatFormat,
 					result.getResultingForceAtLeftBearing_N());
@@ -172,123 +195,11 @@ public class BeamSolver {
 			result.addSolutionTermForLeftBearing(termForSolutionAtLeftBearing.toString());
 
 			// For the right bearing
-			String finalTerm = solutionTermForRightBearing(beam, result, termForSolutionAtRightBearing, floatFormat);
+			String finalTerm = FormatSolutionString.solutionTermForRightBearing(beam, result, termForSolutionAtRightBearing, floatFormat);
 
 			// Finished....
 			result.addSolutionTermForRightBearing(finalTerm);
 		}
 		return result;
-	}
-
-	/*
-	 * Left Bearing, for single loads.
-	 * 
-	 * Helps building the term showing the solution for the left bearing.
-	 * 
-	 * Returns "force x distance +" if more than two forces acting or
-	 * "force x distance " if only one force is acting or the force is the last
-	 * one acting.
-	 */
-	private static String partOfTermForSingleLoad(double force_N, double angleOfLoadIn_deg, double distance_m,
-			Beam beam, int indexOfLoad) {
-
-		String factor;
-		force_N = force_N * -1;
-
-		if (angleOfLoadIn_deg == 0)
-			factor = force_N + "N x " + distance_m + "m";
-		else
-			factor = force_N + "N x cos(" + angleOfLoadIn_deg + ") x " + distance_m + "m";
-
-		if (force_N < 0)
-			factor = addParatheses(factor);
-		if (indexOfLoad < beam.getNumberOfLoads() - 1)
-			return factor + "+";
-		else
-			return factor;
-	}
-
-	/*
-	 * Left bearing, for line loads.
-	 * 
-	 * Helps building the term showing the solution for the left bearig.
-	 */
-	private static String partOfTermForLineLoad(double lineLoad_N, double lengthOfLineLoad_m,
-			double resultantDistanceFromLeftEnd_m, Beam beam, int indexOfLoad) {
-		String factor = -1 * lineLoad_N + " N/m x " + lengthOfLineLoad_m + "m x " + resultantDistanceFromLeftEnd_m
-				+ "m";
-
-		if (-1 * lineLoad_N < 0)
-			factor = addParatheses(factor);
-		if (indexOfLoad < beam.getNumberOfLoads() - 1)
-			return factor + "+";
-		else
-			return factor;
-	}
-
-	/*
-	 * Right bearing.
-	 * 
-	 * This builds the string containing the complete solution for the right
-	 * bearing which is obtained by solving following equation:
-	 * 
-	 * SummOfVerticalForces=0=F_Left-F1-F2-....-Fn+F_Right
-	 */
-	private static String solutionTermForRightBearing(Beam beam, BeamResult result,
-			StringBuilder termForSolutionAtLeftBearing, String floatFormat) {
-
-		String summand;
-		double loadAtRightBearing = result.getResultingForceAtRightBearing_N();
-		double loadAtLeftBearing = result.getResultingForceAtLeftBearing_N();
-
-		// Get all actiong forces, change their leading sign and add them to the
-		// string containing the term with the solution.
-		for (int i = 0; i <= beam.getNumberOfLoads() - 1; i++) {
-			Load l = beam.getLoad(i);
-
-			double force = l.getForce_N() * -1; // '*-1' => because all known
-												// paramters are broghth to the
-												// other side of the equation...
-
-			if (l.getLengthOfLineLoad_m() > 0)
-				summand = force + "N x " + l.getLengthOfLineLoad_m() + "m";
-			else {
-				if (l.getAngleOfLoad_degrees() != 0)
-					summand = force + "N x cos(" + l.getAngleOfLoad_degrees() + ")";
-				else
-					summand = force + "N";
-			}
-
-			if (force < 0)
-				summand = addParatheses(summand);
-
-			termForSolutionAtLeftBearing.append(summand + " + ");
-		}
-
-		// Change leading sign of resulting force at left bearing
-		// and, if it changes to '-', add paratheses
-		loadAtLeftBearing = loadAtLeftBearing * -1;
-		String loadAtLeftBearingFormatted = String.format("%." + floatFormat, loadAtLeftBearing);
-
-		if (loadAtLeftBearing < 0)
-			loadAtLeftBearingFormatted = addParatheses(loadAtLeftBearingFormatted + "N");
-		else
-			loadAtLeftBearingFormatted = loadAtLeftBearing + "N";
-
-		// Format resulting force at right bearing
-		String loadAtRightBearingFormatted = String.format("%." + floatFormat, loadAtRightBearing);
-
-		// The completed term:
-		termForSolutionAtLeftBearing.append(loadAtLeftBearingFormatted + " = " + loadAtRightBearingFormatted + "N");
-
-		return termForSolutionAtLeftBearing.toString();
-	}
-
-	/*
-	 * Encloses a summand of a term in paratheses.
-	 * 
-	 */
-	private static String addParatheses(String summand) {
-		return summand = "(" + summand + ")";
 	}
 }

@@ -17,7 +17,7 @@ public class BeamResult {
 
 	private List<BeamCalcError> error;
 	private double resultingForceAtLeftBearing_N, resultingForceAtRightBearing_N, sumOfHorizontalForcesIn_N;
-	private String solutionTermForRightBearing,solutionTermForLeftBearing;
+	private String solutionTermForRightBearing,solutionTermForLeftBearing,solutionTermForHorizontalForces;
 	
 	public BeamResult() {
 		error = new ArrayList<BeamCalcError>();
@@ -60,6 +60,15 @@ public class BeamResult {
 	}
 	
 	/**
+	 * Adds the solution term for the sum of the horizonztal force.
+	 * 
+	 * @param solutionTermForHorizontalFarces
+	 */
+	public void addSolutionTermForHorizontalForce(String solutionTermForHorizontalFarces){
+		this.solutionTermForHorizontalForces=solutionTermForHorizontalFarces;
+	}
+	
+	/**
 	 * Adds a mathematical term showing the solution in detail.
 	 * This method is invoked by the {@link BeamSolver} class
 	 * 
@@ -87,6 +96,17 @@ public class BeamResult {
 	 */
 	public void addSolutionTermForLeftBearing(String solutionTermForLeftBearing){
 		this.solutionTermForLeftBearing=solutionTermForLeftBearing;
+	}
+	
+	/**
+	 * Returns the mathematical term showing the solution for the sum
+	 * of the horizontal forces in detail.
+	 * 
+	 * @return Mathematical term showing the solution for the sum of the horizontal
+	 * forces.
+	 */
+	public String getSolutionTermForHorizontalForces(){
+		return solutionTermForHorizontalForces;
 	}
 	
 	/**

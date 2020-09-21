@@ -7,19 +7,20 @@ package org.berthold.beamCalc;
  * Sign:<p> 
  *
  * Vertical loads: Force acting downwards (-) Load acting upwards (+).
- * Horizontal force acts to the left (+), force acts to the right (-)
+ * Horizontal force acts to the left (+), force acts to the right (-)<p>
  * 
  * Angle in degrees:<p>
  *                
- * Left side angles range from 0 to -179 deg, counterclokwise.
  * Right side angles range from 0 to 180 deg, clockwise.
+ * Left side angles range from 0 to -179 deg, counterclokwise.<p>
  *                  
  * Samples<p>
  * 
- * 		+90 deg.  load acting from right to left, horizontally
- * 		+45 deg.  load acting diagonally from upper right to bottom left
- *      +135 deg. same as +45 but acting from lower right to upper left
- *      A  negative load at an angle of 180 deg. is the same as a positive load acting at 0 deg.
+ * 		+90 deg.  load acting to left, horizontally<br>
+ * 		+45 deg.  load acting diagonally from upper right to bottom left<br>
+ *      +135 deg. same as +45 but acting from lower right to upper left<p>
+ *      A  negative load at an angle of 180 deg. is the same as a positive load acting at 0 deg.<p>
+ *      
  * @see		Beam
  * @author 	Berthold
  */
