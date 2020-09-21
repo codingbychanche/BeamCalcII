@@ -10,6 +10,8 @@ Screenshoot of "Beam Calc". An Android app using this library. The screenshot sh
 
 ![](Shot_1.png)
 
+![](LeadingSigns.png)
+
 You can get the Android app here:
 [Google Play, Beam Calc](https://play.google.com/store/apps/details?id=berthold.beamcalc)
 
