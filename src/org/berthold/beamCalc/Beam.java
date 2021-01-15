@@ -1,38 +1,40 @@
 package org.berthold.beamCalc;
-/**
- * A Beam.
- * 
- * @author Berthold
- */
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
+
+/** 
+ * A beam
  * 
  * @author Berthold
  *
  */
 public class Beam {
 	private double lengthOfBeam_m;
-	private List<Bearing> support;
-	private int numberOfBearings;
-	private List<Load> stress;
+	private List<Support> support;
+	private int numberOfSupports;
+	private List<Load> force;
 
+	/**
+	 * A new beam.
+	 * 
+	 * @param lengthOfBeam_m
+	 */
 	public Beam(double lengthOfBeam_m) {
 		this.lengthOfBeam_m = lengthOfBeam_m;
-		support = new ArrayList<Bearing>();
-		numberOfBearings = 0;
-		stress = new ArrayList<Load>();
+		support = new ArrayList<Support>();
+		numberOfSupports = 0;
+		force = new ArrayList<Load>();
 	}
 
 	public void addLoad(Load load) {
-		stress.add(load);
+		force.add(load);
 	}
 
-	public void addBearing(Bearing bearing) {
+	public void addBearing(Support bearing) {
 		support.add(bearing);
-		numberOfBearings++;
+		numberOfSupports++;
 	}
 
 	public boolean isInsideOfBeamLength(double distanceFromLeftEndOfBeam_m) {
@@ -43,7 +45,7 @@ public class Beam {
 	}
 
 	public Load getLoad(int atIndex) {
-		return stress.get(atIndex);
+		return force.get(atIndex);
 	}
 
 	public double getLength() {
@@ -51,21 +53,21 @@ public class Beam {
 	}
 
 	public int getNumberOfLoads() {
-		return stress.size();
+		return force.size();
 	}
 
 	public int getNumberOfBearings() {
-		return numberOfBearings;
+		return numberOfSupports;
 	}
 
-	public Bearing getBearing(int bearingIndexFromLeftEndOfBeam) {
+	public Support getBearing(int bearingIndexFromLeftEndOfBeam) {
 		return support.get(bearingIndexFromLeftEndOfBeam);
 	}
 
 	public double getMaxLoadIn_N() {
 		double maxLoad = 0;
-		for (int i = 0; i <= stress.size() - 1; i++) {
-			double load = Math.abs(stress.get(i).getForce_N());
+		for (int i = 0; i <= force.size() - 1; i++) {
+			double load = Math.abs(force.get(i).getForce_N());
 			if (load > maxLoad)
 				maxLoad = load;
 		}
@@ -75,7 +77,7 @@ public class Beam {
 	public int getNumberOfSingleLoads() {
 		int numberOfSingleLoads = 0;
 
-		for (Load l : stress) {
+		for (Load l : force) {
 			if (l.getLengthOfLineLoad_m() == 0)
 				numberOfSingleLoads++;
 		}
@@ -85,7 +87,7 @@ public class Beam {
 	public int getNumberOfLineLoads() {
 		int numberOfLineLoads = 0;
 
-		for (Load l : stress) {
+		for (Load l : force) {
 			if (l.getLengthOfLineLoad_m() > 0)
 				numberOfLineLoads++;
 		}
@@ -93,22 +95,24 @@ public class Beam {
 	}
 
 	/*
-	 * Sorting
-	 * 
-	 * These methods my come in handy, if one uses this package with a GUI, when
-	 * creating a drawing of the result.
-	 * 
-	 * E.g. When drawing line loads the drawing is much clearer when the bigger
-	 * load is drawn first, then the smaller one. Otherwise the bigger load
-	 * would overlap the smaller one.....
+	 *
 	 */
-
+	
+	/**
+	 * Sort loads descending by distance from left end of beam.
+	 * 
+	 * @return Sorted list of loads.
+	 */
 	public List<Load> getLoadsSortedByDistanceFromLeftSupportDesc() {
-		Collections.sort(this.stress);
-		return this.stress;
+		Collections.sort(this.force);
+		return this.force;
 	}
 
-	public List<Bearing> getBearingsSortedByDistanceFromLeftEndOfBeamDesc() {
+	/**
+	 * Sort supports descending by distance from left end of beam.
+	 * @return
+	 */
+	public List<Support> getSupportsSortedByDistanceFromLeftEndOfBeamDesc() {
 		Collections.sort(this.support);
 		return this.support;
 	}

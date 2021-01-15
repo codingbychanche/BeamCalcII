@@ -1,15 +1,16 @@
 package org.berthold.beamCalc;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Solves a simply supported beam with single and/ or line loads.
  * 
- * Beam has a statically determined support configuration. Bearings may be
+ * Beam has a statically determined support configuration. supports may be
  * placed arbitrary.
  * 
  * Solver has to check for valid initial conditions. If any of the expected
- * initial conditions are not met (e.g. bearing not inside beam length) result
+ * initial conditions are not met (e.g. support not inside beam length) result
  * is set to 0 and an {@link Error} object is added to {@link Result} object.
  * 
  * Vertical Forces: Force, leading sign: (+) Force acts upwards (-) Force acts
@@ -24,52 +25,58 @@ import java.util.List;
  * 
  * Solver calculates from left to right by solving the following equation:
  * <p>
- * TorqueSumAtRightBearing=0=F_Leftxl-F1x(l2-x1)-F2x(l2-x2)-....-Fn(l2-xn)
+ * TorqueSumAtRightsupport=0=F_Leftxl-F1x(l2-x1)-F2x(l2-x2)-....-Fn(l2-xn)
  * <p>
  * 
- * Resulting force at right bearing is calculated by solving this equation:
+ * Resulting force at right support is calculated by solving this equation:
  * <p>
  * SummOfVerticalForces=0=F_Left-F1-F2-....-Fn+F_Right
  *
  * @author Berthold
- *
  * 
- * @param beam
- *            A simply supported {@link Beam} with two {@link Bearing}'s and at
- *            least one {@link Load}
- * @param floatFormat
- *            Float Format. Determines the decimal places used within the term
- *            containing the detailed solution.<br>
- *            Example: "2f" means two decimal places....
- * @return {@link BeamResult}
  */
 public class BeamSolver {
 
-	public static int NUMBER_OF_BEARINGS = 2; // Not one more yet, sorry.
+	public static int NUMBER_OF_SUPPORTS = 2; // Not one more yet, sorry.
 
+	/**
+	 * Creates a new result.
+	 *
+	 *
+	 * @param beam
+	 *            A simply supported {@link Beam} with two {@link Support}'s and
+	 *            at least one {@link Load}
+	 * 
+	 * @param floatFormat
+	 *            Float Format. Determines the decimal places used within the
+	 *            term containing the detailed solution.<br>
+	 *            Example: "2f" means two decimal places....
+	 * 
+	 * @return {@link BeamResult}
+	 */
 	public static BeamResult getResults(Beam beam, String floatFormat) {
 
 		BeamResult result = new BeamResult();
-		double spaceBetweenBearings_m = 0;
+		double spaceBetweenSupports_m = 0;
 		double torqueSum = 0;
 		double loadSumVertical = 0;
 		double loadSumHorizontal = 0;
 		Load load;
 		double verticalLoad, horizontalLoad;
 
-		// Sort bearings by distance from left end of beam....
-		List<Bearing> bearingsSorted = new ArrayList<Bearing>();
-		bearingsSorted = beam.getBearingsSortedByDistanceFromLeftEndOfBeamDesc();
-		Bearing leftBearing = bearingsSorted.get(0);
-		Bearing rightBearing = bearingsSorted.get(1);
+		// Sort supports by distance from left end of beam....
+		List<Support> supportsSorted = new ArrayList<Support>();
+		supportsSorted = beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc();
+		Support leftSupport = supportsSorted.get(0);
+		Support rightSupport = supportsSorted.get(1);
 
-		// Check if bearing is inside beam length
-		if (beam.isInsideOfBeamLength(leftBearing.getDistanceFromLeftEndOfBeam_m())
-				&& beam.isInsideOfBeamLength(rightBearing.getDistanceFromLeftEndOfBeam_m())) {
-			spaceBetweenBearings_m = Math
-					.abs(leftBearing.getDistanceFromLeftEndOfBeam_m() - rightBearing.getDistanceFromLeftEndOfBeam_m());
+		// Check if support is inside beam length
+		if (beam.isInsideOfBeamLength(leftSupport.getDistanceFromLeftEndOfBeam_m())
+				&& beam.isInsideOfBeamLength(rightSupport.getDistanceFromLeftEndOfBeam_m())) {
+			spaceBetweenSupports_m = Math
+					.abs(leftSupport.getDistanceFromLeftEndOfBeam_m() - rightSupport.getDistanceFromLeftEndOfBeam_m());
 		} else {
-			BeamCalcError error = new BeamCalcError(BeamCalcError.BEARING_ERROR, 0, "Bearing outside of beam");
+			BeamCalcError error = new BeamCalcError(BeamCalcError.SUPPORT_ERROR, 0, "Bearing outside of beam");
 			result.addError(error);
 		}
 
@@ -78,10 +85,10 @@ public class BeamSolver {
 		String partOfMathTerm; // String holding current mathematical term.
 
 		StringBuilder termForSolutionAtLeftBearing = new StringBuilder();
-		termForSolutionAtLeftBearing.append(bearingsSorted.get(0).getNameOfBearing() + "=(");
+		termForSolutionAtLeftBearing.append(supportsSorted.get(0).getNameOfSupport() + "=(");
 
 		StringBuilder termForSolutionAtRightBearing = new StringBuilder();
-		termForSolutionAtRightBearing.append(bearingsSorted.get(1).getNameOfBearing() + "=");
+		termForSolutionAtRightBearing.append(supportsSorted.get(1).getNameOfSupport() + "=");
 
 		StringBuilder termForSolutionOfHorizForce = new StringBuilder();
 		termForSolutionOfHorizForce.append("N=");
@@ -112,8 +119,9 @@ public class BeamSolver {
 
 						// Build mathematical term accordingly.
 						// Vertical load
-						partOfMathTerm = FormatSolutionString.partOfTermForSingleLoad(load.getForce_N(), load.getAngleOfLoad_degrees(),
-								rightBearing.getDistanceFromLeftEndOfBeam_m() - load.getDistanceFromLeftEndOfBeam_m(),
+						partOfMathTerm = FormatSolutionString.partOfTermForSingleLoad(load.getForce_N(),
+								load.getAngleOfLoad_degrees(),
+								rightSupport.getDistanceFromLeftEndOfBeam_m() - load.getDistanceFromLeftEndOfBeam_m(),
 								beam, i);
 						termForSolutionAtLeftBearing.append(partOfMathTerm);
 
@@ -127,37 +135,32 @@ public class BeamSolver {
 
 						// Build solution term
 						partOfMathTerm = FormatSolutionString.partOfTermForSingleLoad(verticalLoad, 0,
-								rightBearing.getDistanceFromLeftEndOfBeam_m() - load.getDistanceFromLeftEndOfBeam_m(),
+								rightSupport.getDistanceFromLeftEndOfBeam_m() - load.getDistanceFromLeftEndOfBeam_m(),
 								beam, i);
 						termForSolutionAtLeftBearing.append(partOfMathTerm);
 
 					}
-
 					loadSumVertical = loadSumVertical + verticalLoad;
 					torqueSum = torqueSum + verticalLoad
-							* (rightBearing.getDistanceFromLeftEndOfBeam_m() - load.getDistanceFromLeftEndOfBeam_m());
+							* (rightSupport.getDistanceFromLeftEndOfBeam_m() - load.getDistanceFromLeftEndOfBeam_m());
 
 				} else {
 
 					/*
 					 * Load is line load
 					 */
-					double lineLoad_N = load.getForce_N();
-					double resultandForce_N = lineLoad_N * load.getLengthOfLineLoad_m();
+					double resultandForce_N = load.getForce_N();
+					double distanceOfResultandForceFromLeftEndOfbeam_m = load.getCenterOfGravity_m()
+							+ load.getDistanceFromLeftEndOfBeam_m();
 
-					double distanceOfResultandForceFromLeftEndOfbeam_m = (load.getDistanceFromLeftEndOfBeam_m())
-							+ load.getLengthOfLineLoad_m() / 2;
-
-					double lengthOfLeverToRightBearing_m = rightBearing.getDistanceFromLeftEndOfBeam_m()
+					double lengthOfLeverToRightBearing_m = rightSupport.getDistanceFromLeftEndOfBeam_m()
 							- distanceOfResultandForceFromLeftEndOfbeam_m;
 
 					// Calc torque- sum
 					loadSumVertical = loadSumVertical + resultandForce_N;
 					torqueSum = torqueSum + resultandForce_N * lengthOfLeverToRightBearing_m;
 
-					// Build soulution term.
-					String p = FormatSolutionString.partOfTermForLineLoad(lineLoad_N, load.getLengthOfLineLoad_m(),
-							lengthOfLeverToRightBearing_m, beam, i);
+					String p = FormatSolutionString.partOfTermForLineLoad(lengthOfLeverToRightBearing_m, beam, i);
 					termForSolutionAtLeftBearing.append(p);
 				}
 			} else {
@@ -168,7 +171,11 @@ public class BeamSolver {
 			}
 		}
 		if (result.getErrorCount() == 0) {
-			result.setResultingForceAtLeftBearingBearing_N(-1 * torqueSum / spaceBetweenBearings_m);
+			result.setResultingForceAtLeftBearingBearing_N(-1 * torqueSum / spaceBetweenSupports_m);
+
+			//
+			// Calculate resulting force at right bearing.
+			//
 			result.setResultingForceAtRightBearing_N(-1 * loadSumVertical - result.getResultingForceAtLeftBearing_N());
 			result.setSumOfHorizontalForcesIn_N(loadSumHorizontal);
 
@@ -179,23 +186,24 @@ public class BeamSolver {
 
 			// For the horizontal forces
 			String sumOfHorizontalLoadsFormated = String.format("%." + floatFormat, loadSumHorizontal);
-			
+
 			if (loadSumHorizontal != 0)
-				termForSolutionOfHorizForce.append(" = " + sumOfHorizontalLoadsFormated+"N");
-			else 
-				termForSolutionOfHorizForce.append(sumOfHorizontalLoadsFormated+"N");
-			
+				termForSolutionOfHorizForce.append(" = " + sumOfHorizontalLoadsFormated + "N");
+			else
+				termForSolutionOfHorizForce.append(sumOfHorizontalLoadsFormated + "N");
+
 			result.addSolutionTermForHorizontalForce(termForSolutionOfHorizForce.toString());
 
 			// For the left bearing
 			String resultingForceAtLeftBearingFormatet = String.format("%." + floatFormat,
 					result.getResultingForceAtLeftBearing_N());
 			termForSolutionAtLeftBearing
-					.append(")/" + spaceBetweenBearings_m + "m = " + resultingForceAtLeftBearingFormatet + "N");
+					.append(")/" + spaceBetweenSupports_m + "m = " + resultingForceAtLeftBearingFormatet + "N");
 			result.addSolutionTermForLeftBearing(termForSolutionAtLeftBearing.toString());
 
 			// For the right bearing
-			String finalTerm = FormatSolutionString.solutionTermForRightBearing(beam, result, termForSolutionAtRightBearing, floatFormat);
+			String finalTerm = FormatSolutionString.solutionTermForRightBearing(beam, result,
+					termForSolutionAtRightBearing, floatFormat);
 
 			// Finished....
 			result.addSolutionTermForRightBearing(finalTerm);

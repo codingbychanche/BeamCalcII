@@ -10,7 +10,7 @@ package org.berthold.beamCalc;
 public class BeamCalcError {
 
 	public static final int LOAD_ERROR=1;		// Origin of error.....
-	public static final int BEARING_ERROR=2;
+	public static final int SUPPORT_ERROR=2;
 	
 	private int originOfError;
 	private int indexOfError; 					// Index of load or bearing in source data list that may have caused the error

@@ -36,7 +36,7 @@ public class ShearingForcesSolver {
 		Beam Qbeam = new Beam(beam.getLength());
 
 		// Add supporting forces as loads
-		Bearing bearing = beam.getBearing(0);
+		Support bearing = beam.getBearing(0);
 		double distanceFromLeftEnd = bearing.getDistanceFromLeftEndOfBeam_m();
 		Load supportLeft_N = new Load("FA", result.getResultingForceAtLeftBearing_N(), distanceFromLeftEnd, 0, 0);
 		Qbeam.addLoad(supportLeft_N);

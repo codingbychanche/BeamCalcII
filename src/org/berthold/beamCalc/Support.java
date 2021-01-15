@@ -2,16 +2,16 @@ package org.berthold.beamCalc;
 /**
  * A Bearing.<p>
  * 
- * Defines kind of bearing and it's position in [m] relative to to left end
+ * Defines kind of suport and it's position in [m] relative to to left end
  * of the {@link Beam} it is supporting.
  * 
  * @see		Beam
  * @author	Berthold
  */
 
-public class Bearing implements Comparable <Bearing>{
+public class Support implements Comparable <Support>{
 
-	private String nameOfBearing;
+	private String nameOfSupport;
 	private double distanceFromLeftEndOfBeam_m;
 
 	/**
@@ -20,18 +20,18 @@ public class Bearing implements Comparable <Bearing>{
 	 * 
 	 * @param distanceFromLeftEndOfBeam_m
 	 */
-	public Bearing(double distanceFromLeftEndOfBeam_m) {
+	public Support(double distanceFromLeftEndOfBeam_m) {
 		this.distanceFromLeftEndOfBeam_m = distanceFromLeftEndOfBeam_m;
 	}
 	
 	/** 
-	 * Use this if you want to give a name to the bearing.
+	 * Use this if you want to give a name to the support.
 	 * 
-	 * @param nameOfBearing
+	 * @param nameOfSupport
 	 * @param distanceFromLeftEndOfBeam_m
 	 */
-	public Bearing(String nameOfBearing,double distanceFromLeftEndOfBeam_m) {
-		this.nameOfBearing=nameOfBearing;
+	public Support(String nameOfSupport,double distanceFromLeftEndOfBeam_m) {
+		this.nameOfSupport=nameOfSupport;
 		this.distanceFromLeftEndOfBeam_m = distanceFromLeftEndOfBeam_m;
 	}
 
@@ -39,16 +39,15 @@ public class Bearing implements Comparable <Bearing>{
 		return distanceFromLeftEndOfBeam_m;
 	}
 	
-	public String getNameOfBearing(){
-		return nameOfBearing;
+	public String getNameOfSupport(){
+		return nameOfSupport;
 	}
 	
 	/*
 	 * Compareable
 	 */
-
 	@Override
-	public int compareTo(Bearing compareDistanceFromLeftEndOfBeam_m){
+	public int compareTo(Support compareDistanceFromLeftEndOfBeam_m){
 		return (int)this.distanceFromLeftEndOfBeam_m-(int)compareDistanceFromLeftEndOfBeam_m.distanceFromLeftEndOfBeam_m;
 	}
 }
