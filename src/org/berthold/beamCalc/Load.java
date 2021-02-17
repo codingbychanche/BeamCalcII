@@ -49,7 +49,7 @@ public class Load implements Comparable<Load> {
 	private boolean thisLoadHasAnError;
 
 	/**
-	 * This constructor allows to add uniformly distributed line load by passing
+	 * This constructor allows to add uniformly distributed line loads by passing
 	 * the load magnitute and the length of the load acting.
 	 * 
 	 * @param nameOfLoad
