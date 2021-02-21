@@ -39,7 +39,9 @@ public class MainBeamCalculator {
 		// myBeam.addLoad(new Load("F0", -3, 0.0, 0, 0));
 		// myBeam.addLoad(new Load("F0", -9, 0.0, 0, 0));
 		//myBeam.addLoad(new Load("F1", -3.0, 1.5, 0, 0));
-		// myBeam.addLoad(new Load("F2", -2.5, 1.5, 179, 0));
+		
+		// Name Force Dist Ang. Length
+		myBeam.addLoad(new Load("F1", -2.5, 1.5, 0, 0));
 
 		// Name Start_N End_N Dist. Ang. Length
 		myBeam.addLoad(new Load("q1", 0, -4.0, 0.0, 0.0, 7.5));
@@ -52,7 +54,7 @@ public class MainBeamCalculator {
 		System.out.println("Loads sorted by distance from left end of beam:");
 		for (Load l : sortedLoads)
 			System.out.println(
-					"Name:" + l.getName() + " Magnitute:" + l.getForce_N() +" xn="+l.getDistanceFromLeftEndOfBeam_m() +" Lengtht:" + l.getLengthOfLineLoad_m());
+					"Name:" + l.getName() + " Magnitute at start:" + l.getForceStart_N() +" distance from left end:"+l.getDistanceFromLeftEndOfBeam_m() +" Lengtht:" + l.getLengthOfLineLoad_m()+"  Force at end:"+l.getForceEnd_N()+" Resulting force:"+l.getForce_N()+" is acting "+l.getCenterOfGravity_m()+" m from left end of beam.");
 		
 		// Solve
 		BeamResult result = BeamSolver.getResults(myBeam, "2f");

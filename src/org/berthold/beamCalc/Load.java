@@ -47,10 +47,10 @@ public class Load implements Comparable<Load> {
 	private double angleOfLoad_degrees;
 	private boolean includeThisLoadIntoCaclulation;
 	private boolean thisLoadHasAnError;
-
+	
 	/**
-	 * This constructor allows to add uniformly distributed line loads by passing
-	 * the load magnitute and the length of the load acting.
+	 * This constructor allows to add constant line loads by passing
+	 * the load magnitude and the length of the load acting.
 	 * 
 	 * @param nameOfLoad
 	 *            Any name allowed (F1, q1 etc..).
@@ -77,10 +77,10 @@ public class Load implements Comparable<Load> {
 		this.includeThisLoadIntoCaclulation = includeThisLoadIntoCaclulation;
 		this.thisLoadHasAnError = thisLoadHasAnError;
 	}
-
+	
 	/**
-	 * Optional constructor. Pass load without flags (include load, has
-	 * error....).
+	 * Optional constructor for. Pass single load or
+	 * constant line loads without flags (include load, has error....).
 	 * 
 	 * @param nameOfLoad
 	 * @param force_N
@@ -96,9 +96,10 @@ public class Load implements Comparable<Load> {
 		this.angleOfLoad_degrees = angleOfLoad_degrees;
 		this.lengthOfLineLoad_m = lengthOfLineLoad_m;
 	}
-
+	
 	/**
-	 * This constructor allows to add uniformly changing, line loads.
+	 * This constructor allows to add uniformly changing, line loads by
+	 * passing load at the start and load at the end.
 	 * 
 	 * @param nameOfLoad
 	 * @param forceStart_N
@@ -123,8 +124,8 @@ public class Load implements Comparable<Load> {
 	}
 
 	/**
-	 * Optional constructor. Pass load without flags (include load, has
-	 * error....).
+	 * Optional constructor. Pass single or uniformly changing line loads
+	 * without flags (include load, has error....).
 	 * 
 	 * @param nameOfLoad
 	 * @param forceStart_N
@@ -162,7 +163,7 @@ public class Load implements Comparable<Load> {
 	}
 
 	/**
-	 * @return Either the force of the single load or, if this is a uniform line
+	 * @return Either the force of the single load or, if this is a constant line
 	 *         load or a uniformly changing line load, the resulting force
 	 *         acting at the center of gravity of this loads plane.
 	 */
