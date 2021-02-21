@@ -149,14 +149,14 @@ public class BeamSolver {
 					/*
 					 * Load is line load
 					 */
-					double resultandForce_N = load.getForce_N();
+					double resultandForce_N = load.getResultantForce_N();
 					double distanceOfResultandForceFromLeftEndOfbeam_m = load.getCenterOfGravity_m()
 							+ load.getDistanceFromLeftEndOfBeam_m();
 
 					double lengthOfLeverToRightBearing_m = rightSupport.getDistanceFromLeftEndOfBeam_m()
 							- distanceOfResultandForceFromLeftEndOfbeam_m;
 
-					// Calc torque- sum
+					// Calculate torque- sum
 					loadSumVertical = loadSumVertical + resultandForce_N;
 					torqueSum = torqueSum + resultandForce_N * lengthOfLeverToRightBearing_m;
 

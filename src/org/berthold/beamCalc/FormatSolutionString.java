@@ -18,9 +18,9 @@ public class FormatSolutionString {
 	 * @param distance_m
 	 * @param beam
 	 * @param indexOfLoad
-	 * @return "force x distance +" if more than two forces acting or
-	 *         "force x distance " if only one force is acting or the force is
-	 *         the last one acting.
+	 * @return "force x distance +" if more than two forces acting or "force x
+	 *         distance " if only one force is acting or the force is the last one
+	 *         acting.
 	 */
 	public static String partOfTermForSingleLoad(double force_N, double angleOfLoadIn_deg, double distance_m, Beam beam,
 			int indexOfLoad) {
@@ -53,16 +53,17 @@ public class FormatSolutionString {
 		String factor;
 		double forceStart_N = beam.getLoad(indexOfLoad).getForceStart_N();
 		double forceEnd_N = beam.getLoad(indexOfLoad).getForceEnd_N();
-		double resultandForce_N = beam.getLoad(indexOfLoad).getForce_N();
+		double resultandForce_N = beam.getLoad(indexOfLoad).getResultantForce_N();
 		double lengthOfLineLoad_m = beam.getLoad(indexOfLoad).getLengthOfLineLoad_m();
 
-		// If load is uninformingly distributed, term for resultant force is
-		// trival: q/m x length
-		// if not, add only the resultand force to the term which is obtained
+		// If load is uniformly distributed, term for resultant force is
+		// q/m x length
+		//
+		// if not, add only the resultant force to the term which is obtained
 		// from the {@link Load} object.
 		if (forceStart_N == forceEnd_N) {
 
-			// Term for uniformingly distributed line load
+			// Term for uniformly distributed line load
 			factor = -1 * forceStart_N + " N/m x " + lengthOfLineLoad_m + "m x " + resultantDistanceFromLeftEnd_m + "m";
 		} else {
 			// Term for uniformingly changing line load
@@ -105,7 +106,7 @@ public class FormatSolutionString {
 	 * @param result
 	 * @param termForSolutionAtRightBearing
 	 * @param floatFormat
-	 * @return
+	 * @return Solution term for the resulting force at the right bearing.
 	 */
 	public static String solutionTermForRightBearing(Beam beam, BeamResult result,
 			StringBuilder termForSolutionAtRightBearing, String floatFormat) {
@@ -114,34 +115,35 @@ public class FormatSolutionString {
 		double loadAtRightBearing = result.getResultingForceAtRightBearing_N();
 		double loadAtLeftBearing = result.getResultingForceAtLeftBearing_N();
 
-		// Get all actiong forces, change their leading sign and add them to the
+		// Get all acting forces, change their leading sign and add them to the
 		// string containing the term with the solution.
 		for (int i = 0; i <= beam.getNumberOfLoads() - 1; i++) {
 			Load l = beam.getLoad(i);
 
 			// '*-1' => because all known
-			// paramters are broghth to the
+			// parameters are brought to the
 			// other side of the equation...
-			double resultandForce_N = l.getForce_N() * -1;
+			double resultantForce_N = l.getResultantForce_N() * -1;
+			double force_N=l.getForce_N()*-1;
 			double forceStart_N = l.getForceStart_N() * -1;
 			double forceEnd_N = l.getForceEnd_N() * -1;
 
 			// Line load or single load?
 			if (l.getLengthOfLineLoad_m() > 0) {
 				// Line load:
-				// If line load is uniformingly distributed or not?
+				// Is line load is uniformly distributed or not?
 				if (forceStart_N == forceEnd_N)
-					summand = forceStart_N + "N x " + l.getLengthOfLineLoad_m() + "m";
+					summand = force_N+ "N x " + l.getLengthOfLineLoad_m() + "m";
 				else
-					summand = resultandForce_N + "N ";
+					summand = resultantForce_N + "N ";
 			} else {
 				// Single load
 				if (l.getAngleOfLoad_degrees() != 0)
-					summand = resultandForce_N + "N x cos(" + l.getAngleOfLoad_degrees() + ")";
+					summand =force_N + "N x cos(" + l.getAngleOfLoad_degrees() + ")";
 				else
-					summand = resultandForce_N + "N";
+					summand = force_N + "N";
 			}
-			if (resultandForce_N < 0)
+			if (force_N < 0 || resultantForce_N<0)
 				summand = addParatheses(summand);
 
 			termForSolutionAtRightBearing.append(summand + " + ");
