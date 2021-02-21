@@ -4,20 +4,37 @@ import java.util.*;
 /**
  * Library demo.
  * 
+ * Shows how to use the library.
  * 
  * @author Berthold
- *
  */
 public class MainBeamCalculator {
 
+	/**
+	 * Main
+	 * 
+	 * @param args	Not used.
+	 */
 	public static void main(String[] args) {
 
 		// Create a new beam
 		Beam myBeam = new Beam(7.5);
 		myBeam.addBearing(new Support("Left bearing", 0));
 		myBeam.addBearing(new Support("Right bearing", 7.5));
+	
+		// Show beam info
+		System.out.println("Beam:");
+		System.out.println("Length="+myBeam.getLength());
+		
+		// Get bearings sorted by distance from left end of beam, sort asc...
+		List<Support> sortedBearings = new ArrayList();
+		sortedBearings = myBeam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc();
+		System.out.println("Bearings sorted by distance from left end of beam:");
+		for (Support b : sortedBearings)
+			System.out.println("Bearing "+b.getNameOfSupport()+ "    xn=" + b.getDistanceFromLeftEndOfBeam_m());
 
 		// Add loads
+		
 		// Name Force Dist Ang. Length
 		// myBeam.addLoad(new Load("F0", -3, 0.0, 0, 0));
 		// myBeam.addLoad(new Load("F0", -9, 0.0, 0, 0));
@@ -26,13 +43,24 @@ public class MainBeamCalculator {
 
 		// Name Start_N End_N Dist. Ang. Length
 		myBeam.addLoad(new Load("q1", 0, -4.0, 0.0, 0.0, 7.5));
-
+				
+		// Get and show loads sorted by distance from left end of beam.
+		List<Load> sortedLoads = new ArrayList();
+		sortedLoads = myBeam.getLoadsSortedByDistanceFromLeftSupportDesc();
+		System.out.println("");
+		System.out.println("Number of Loads:" + myBeam.getNumberOfLoads());
+		System.out.println("Loads sorted by distance from left end of beam:");
+		for (Load l : sortedLoads)
+			System.out.println(
+					"Name:" + l.getName() + " Magnitute:" + l.getForce_N() +" xn="+l.getDistanceFromLeftEndOfBeam_m() +" Lengtht:" + l.getLengthOfLineLoad_m());
+		
 		// Solve
 		BeamResult result = BeamSolver.getResults(myBeam, "2f");
 
 		// Show result or error's
 		if (result.getErrorCount() == 0) {
-			System.out.println("Beam. Loads:" + myBeam.getNumberOfLoads());
+			System.out.println("");
+			System.out.println("RESULT:");
 			System.out.println("Left bearing:" + result.getResultingForceAtLeftBearing_N() + " N. Right bearing:"
 					+ result.getResultingForceAtRightBearing_N() + " N.");
 			System.out.println("Horizontal:" + result.getSumOfHorizontalForcesIn_N());
@@ -41,23 +69,6 @@ public class MainBeamCalculator {
 			System.out.println("Term:" + result.getSolutionTermForLeftBearing());
 		} else
 			showErrors(result);
-
-		// Get loads sorted by distance from left end of beam, sort asc...
-		List<Load> sortedLoads = new ArrayList();
-		sortedLoads = myBeam.getLoadsSortedByDistanceFromLeftSupportDesc();
-
-		System.out.println("Loads sorted by distance from left end of beam:");
-		for (Load l : sortedLoads)
-			System.out.println(
-					"Name:" + l.getName() + " Magnitute:" + l.getForce_N() +" xn="+l.getDistanceFromLeftEndOfBeam_m() +" Lengtht:" + l.getLengthOfLineLoad_m());
-
-		// Get bearings sorted by distance from left end of beam, sort asc...
-		List<Support> sortedBearings = new ArrayList();
-		sortedBearings = myBeam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc();
-
-		System.out.println("Bearings sorted by distance from left end of beam:");
-		for (Support b : sortedBearings)
-			System.out.println("Bearing "+b.getNameOfSupport()+ "    xn=" + b.getDistanceFromLeftEndOfBeam_m());
 	}
 
 	/*
@@ -76,5 +87,4 @@ public class MainBeamCalculator {
 				System.out.println("Error for bearing:" + error.getErrorDescription());
 		}
 	}
-
 }
