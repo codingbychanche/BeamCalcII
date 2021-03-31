@@ -54,10 +54,10 @@ public class ShearingForcesSolver {
 
 			if (l.getLengthOfLineLoad_m() > 0) {
 				// Name Force Dist Ang. Length
-				singleLoad_N = new Load("-", l.getForce_N(), l.getDistanceFromLeftEndOfBeam_m(), 0, l.getLengthOfLineLoad_m());
+				singleLoad_N = new Load("-", l.getForceStart_N(), l.getDistanceFromLeftEndOfBeam_m(), 0, l.getLengthOfLineLoad_m());
 				Qbeam.addLoad(singleLoad_N);
 
-				singleLoad_N = new Load("-", l.getForce_N(),
+				singleLoad_N = new Load("-", l.getForceEnd_N(),
 						l.getDistanceFromLeftEndOfBeam_m() + l.getLengthOfLineLoad_m(), 0, 0);
 				Qbeam.addLoad(singleLoad_N);
 			} else {

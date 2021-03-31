@@ -26,7 +26,7 @@ public class MainBeamCalculator {
 		System.out.println("Beam:");
 		System.out.println("Length="+myBeam.getLength());
 		
-		// Get bearings sorted by distance from left end of beam, sort asc...
+		// Get supports sorted by distance from left end of beam, sort asc...
 		List<Support> sortedBearings = new ArrayList();
 		sortedBearings = myBeam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc();
 		System.out.println("Bearings sorted by distance from left end of beam:");
@@ -42,10 +42,10 @@ public class MainBeamCalculator {
 		
 		// Name Force Dist Ang. Length
 		myBeam.addLoad(new Load("F1", -2.5, 1.5, 0, 0));
-		myBeam.addLoad(new Load("F2", -3.0, 4.5, 45, 0));
+		//myBeam.addLoad(new Load("F2", -3.0, 4.5, 45, 0));
 
 		// Name Start_N // End_N // Dist. // Ang. // Length
-		myBeam.addLoad(new Load("q1", 0, -4.0, 0.0, 0.0, 7.5));
+		myBeam.addLoad(new Load("q1", -4.0, -4.0, 0.0, 0.0, 7.5));
 		//myBeam.addLoad(new Load("q2", -4.0, -4.0, 0.0, 0.0, 7.5));
 				
 		// Get and show loads sorted by distance from left end of beam.
@@ -73,10 +73,18 @@ public class MainBeamCalculator {
 			System.out.println("Term:" + result.getSolutionTermForLeftBearing());
 		} else
 			showErrors(result);
+		
+		
+		//
+		// Test
+		//
+		 ShearingForcesSolver.solve(myBeam, result);
 	}
+	
+	
 
 	/*
-	 * Show a description of all errors occurred.....
+	 * Show a description of all errors occured.....
 	 */
 	private static void showErrors(BeamResult result) {
 		int errorCount = result.getErrorCount();
