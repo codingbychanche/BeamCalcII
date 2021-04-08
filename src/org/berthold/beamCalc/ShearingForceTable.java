@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A table consisting of {@link QValue}- objects which are representing the
- * loads acting and their position.
+ * A table consisting of {@link ShearingForceValue}- objects which are
+ * representing the loads acting and their position.
  * 
- * This is acts as an helper- class for the {@link QSolver}- class and
- * holds the final result of the calculation whih can be optained by
- * invoking the getter method for the qTable.
+ * This is acts as an helper- class for the {@link QSolver}- class and holds the
+ * final result of the calculation whih can be optained by invoking the getter
+ * method for the qTable.
  * 
  * @author Berthold
  *
  */
-public class QTable {
+public class ShearingForceTable {
 
-	List<QValue> qValues = new ArrayList<QValue>();
+	List<ShearingForceValue> qValues = new ArrayList<ShearingForceValue>();
 	double sectionLength_m;
 	Beam beam;
 
@@ -29,13 +29,13 @@ public class QTable {
 	 * @param beam            A {@kink Beam}- object from which the table is build.
 	 * @param sectionLength_m Sections between the forces acting.
 	 */
-	public QTable(Beam beam, double sectionLength_m) {
+	public ShearingForceTable(Beam beam, double sectionLength_m) {
 		this.beam = beam;
 		this.sectionLength_m = sectionLength_m;
 
 		// Create empty list with acting forces and add supporting forces
 		for (double x_m = 0; x_m <= (beam.getLength() + sectionLength_m); x_m = x_m + sectionLength_m) {
-			QValue q = new QValue(x_m, 0);
+			ShearingForceValue q = new ShearingForceValue(x_m, 0);
 			qValues.add(q);
 		}
 	}
@@ -62,28 +62,28 @@ public class QTable {
 	/**
 	 * Shearing force at a specified index in the table.
 	 * 
-	 * This method is used by the {@link QSolver}- class. When adding a shearing
-	 * force use the {@link addForce()} method which calculates the index in the
-	 * table depending from the section length and the position of the force
-	 * relative the the left end of the beam.
+	 * This method is used by the {@link QSolver}- and {@link MSolver} the class.
+	 * When adding a shearing force use the {@link addForce()} method which
+	 * calculates the index in the table depending from the section length and the
+	 * position of the force relative the the left end of the beam.
 	 * 
 	 * @param index
 	 * @return Shearing force.
 	 */
-	public QValue getQAtIndex(int index) {
+	public ShearingForceValue getShearingForceAtIndex(int index) {
 		return qValues.get(index);
 	}
 
 	/**
 	 * Shearing force at a specified index in the table.
 	 * 
-	 * This method is used by the {@link QSolver}- class.
+	 * This method is used by the {@link QSolver}- and the {@link MSolver} class.
 	 * 
 	 * @param index
-	 * @param qValue_N The shearing force.
+	 * @param shearingForceValue The shearing force.
 	 */
-	public void setAtIndex(int index, QValue qValue_N) {
-		qValues.set(index, qValue_N);
+	public void setAtIndex(int index, ShearingForceValue shearingForceValue) {
+		qValues.set(index, shearingForceValue);
 	}
 
 	/**
@@ -100,20 +100,20 @@ public class QTable {
 		for (double i = 0; i < beam.getLength(); i = i + sectionLength_m) {
 
 			if (x_m >= i && x_m < i + sectionLength_m) {
-				QValue q = qValues.get(n);
-				q.setQ_N(force_N);
+				ShearingForceValue q = qValues.get(n);
+				q.setShearingForce(force_N);
 				q.setX_m(x_m);
 			}
 			n++;
 		}
 	}
-	
+
 	/**
 	 * List of shearing forces.
 	 * 
-	 * @return List of {@link QValue}- objects.
+	 * @return List of {@link ShearingForceValue}- objects.
 	 */
-	public List<QValue> getQTable() {
+	public List<ShearingForceValue> getShearingForceTable() {
 		return qValues;
 	}
 }

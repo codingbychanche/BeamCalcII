@@ -47,8 +47,8 @@ public class MainBeamCalculator {
 		// myBeam.addLoad(new Load("q2", -4.0, -4.0, 0.0, 0.0, 7.5));
 
 		myBeam.addLoad(new Load("F1", -2.5, 2, 0, 0));
-		myBeam.addLoad(new Load("F2", -4.5, 3.5, 0, 0));
-		myBeam.addLoad(new Load("F2", 3, 2.5, 0, 0));
+		//myBeam.addLoad(new Load("F2", -4.5, 3.5, 0, 0));
+		//myBeam.addLoad(new Load("F2", 3, 2.5, 0, 0));
 		
 		// Get and show loads sorted by distance from left end of beam.
 		List<Load> sortedLoads = new ArrayList();
@@ -80,12 +80,21 @@ public class MainBeamCalculator {
 
 		// ShearingForcesSolver.solve(myBeam, result);
 		System.out.println("");
-		System.out.println("Shearing forces:");
-		QTable qTable=QSolver.solve(myBeam);
+		System.out.println("Shearing forces => Q");
+		ShearingForceTable qTable=QSolver.solve(myBeam);
 		
-		for (QValue q: qTable.getQTable()) {
-			System.out.println("x="+q.getX_m()+"     Q="+q.getQ_N());
+		for (ShearingForceValue q: qTable.getShearingForceTable()) {
+			System.out.println("x="+q.getX_m()+"     Q="+q.getShearingForce());
 		}
+		
+		System.out.println("");
+		System.out.println("Shearing forces => M");
+		ShearingForceTable mTable=MSolver.solve(qTable,myBeam);
+		
+		for (ShearingForceValue m: mTable.getShearingForceTable()) {
+			System.out.println("x="+m.getX_m()+"     M="+m.getShearingForce());
+		}
+		
 	}
 
 	/*

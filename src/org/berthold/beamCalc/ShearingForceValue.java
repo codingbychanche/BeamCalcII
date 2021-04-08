@@ -9,19 +9,19 @@ package org.berthold.beamCalc;
  *
  */
 
-public class QValue {
-	private double x_m,q_N;
+public class ShearingForceValue {
+	private double x_m,shearingForceValue;
 	
 	/**
 	 * Creates a new Q- Value.
 	 * 
 	 * @param x_m	Distance from left end of beam.
-	 * @param f_N	Force acting.
+	 * @param shearingForceValue	Force acting.
 	 */
-	public QValue(double x_m, double f_N) {
+	public ShearingForceValue(double x_m, double shearingForceValue) {
 		super();
 		this.x_m = x_m;
-		this.q_N = f_N;
+		this.shearingForceValue = shearingForceValue;
 	}
 
 	/**
@@ -47,8 +47,8 @@ public class QValue {
 	 * 
 	 * @return
 	 */
-	public double getQ_N() {
-		return q_N;
+	public double getShearingForce() {
+		return shearingForceValue;
 	}
 
 	/**
@@ -56,15 +56,24 @@ public class QValue {
 	 * 
 	 * @param f_N	Shearing force magnitute.
 	 */
-	public void setQ_N(double f_N) {
-		this.q_N = f_N;
+	public void setShearingForce(double f_N) {
+		this.shearingForceValue = f_N;
 	}
 	/**
 	 * Adds an arbitrary value to this shearing force.
 	 * 
-	 * @param q_N Sheraing force to be added to this value.
+	 * @param value Sheraing force to be added to this value.
 	 */
-	public void addQ_N(double q_N) {
-		this.q_N=this.q_N+q_N;
+	public void addValue(double value) {
+		this.shearingForceValue=this.shearingForceValue+value;
+	}
+
+	/**
+	 * Multiplys this value by an arbitrary value
+	 * 
+	 * @param value
+	 */
+	public void multiplyValue(double value) {
+		this.shearingForceValue=this.shearingForceValue*value;
 	}
 }
