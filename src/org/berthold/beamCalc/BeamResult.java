@@ -51,11 +51,11 @@ public class BeamResult {
 		this.resultingForceAtLeftBearing_N = resultingForceAtLeftBearing_N;
 	}
 
-	public double getSumOfHorizontalForcesIn_N() {
+	public double getResultingHorizontalForceAtRightSupport_N() {
 		return sumOfHorizontalForcesIn_N;
 	}
 
-	public void setSumOfHorizontalForcesIn_N(double sumOfHorizontalForces) {
+	public void setResultingHorizontalForceAtRightSupport_N(double sumOfHorizontalForces) {
 		this.sumOfHorizontalForcesIn_N = sumOfHorizontalForces;
 	}
 	

@@ -9,7 +9,7 @@ package org.berthold.beamCalc;
  *
  */
 
-public class ShearingForceValue {
+public class StressResultantValue {
 	private double x_m,shearingForceValue;
 	
 	/**
@@ -18,7 +18,7 @@ public class ShearingForceValue {
 	 * @param x_m	Distance from left end of beam.
 	 * @param shearingForceValue	Force acting.
 	 */
-	public ShearingForceValue(double x_m, double shearingForceValue) {
+	public StressResultantValue(double x_m, double shearingForceValue) {
 		super();
 		this.x_m = x_m;
 		this.shearingForceValue = shearingForceValue;

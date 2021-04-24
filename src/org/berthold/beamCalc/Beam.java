@@ -14,7 +14,7 @@ public class Beam {
 	private double lengthOfBeam_m;
 	private List<Support> support;
 	private int numberOfSupports;
-	private List<Load> force;
+	private List<Load> loads;
 
 	/**
 	 * A new beam.
@@ -25,11 +25,11 @@ public class Beam {
 		this.lengthOfBeam_m = lengthOfBeam_m;
 		support = new ArrayList<Support>();
 		numberOfSupports = 0;
-		force = new ArrayList<Load>();
+		loads = new ArrayList<Load>();
 	}
 
 	public void addLoad(Load load) {
-		force.add(load);
+		loads.add(load);
 	}
 
 	public void addBearing(Support bearing) {
@@ -45,7 +45,7 @@ public class Beam {
 	}
 
 	public Load getLoad(int atIndex) {
-		return force.get(atIndex);
+		return loads.get(atIndex);
 	}
 
 	public double getLength() {
@@ -53,7 +53,7 @@ public class Beam {
 	}
 
 	public int getNumberOfLoads() {
-		return force.size();
+		return loads.size();
 	}
 
 	public int getNumberOfBearings() {
@@ -66,8 +66,8 @@ public class Beam {
 
 	public double getMaxLoadIn_N() {
 		double maxLoad = 0;
-		for (int i = 0; i <= force.size() - 1; i++) {
-			double load = Math.abs(force.get(i).getForce_N());
+		for (int i = 0; i <= loads.size() - 1; i++) {
+			double load = Math.abs(loads.get(i).getForce_N());
 			if (load > maxLoad)
 				maxLoad = load;
 		}
@@ -77,7 +77,7 @@ public class Beam {
 	public int getNumberOfSingleLoads() {
 		int numberOfSingleLoads = 0;
 
-		for (Load l : force) {
+		for (Load l : loads) {
 			if (l.getLengthOfLineLoad_m() == 0)
 				numberOfSingleLoads++;
 		}
@@ -87,16 +87,16 @@ public class Beam {
 	public int getNumberOfLineLoads() {
 		int numberOfLineLoads = 0;
 
-		for (Load l : force) {
+		for (Load l : loads) {
 			if (l.getLengthOfLineLoad_m() > 0)
 				numberOfLineLoads++;
 		}
 		return numberOfLineLoads;
 	}
-
-	/*
-	 *
-	 */
+	
+	public List <Load> getLoads(){
+		return loads;
+	}
 	
 	/**
 	 * Sort loads descending by distance from left end of beam.
@@ -104,8 +104,8 @@ public class Beam {
 	 * @return Sorted list of loads.
 	 */
 	public List<Load> getLoadsSortedByDistanceFromLeftSupportDesc() {
-		Collections.sort(this.force);
-		return this.force;
+		Collections.sort(this.loads);
+		return this.loads;
 	}
 
 	/**

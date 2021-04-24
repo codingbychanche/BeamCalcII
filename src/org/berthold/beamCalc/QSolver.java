@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Creates a table of shearing forces along the length of a {@link Beam}.
+ * Creates a table of shearing forces along the length of a {@link Beam}. q(x)
+ * => Q(x)
  * 
  * @author Berthold
  *
@@ -14,34 +15,35 @@ public class QSolver {
 	/**
 	 * Calculates the shearing forces along the length of the beam.
 	 * 
-	 * Shearing forces are calculated by following this algorythm: 
-	 * Basis is a a table containing {@link ShearingForceValue}- Objects. 
-	 * The starting ontition for this table is, that is must contain all supporting 
-	 * forces and all acting forces.
+	 * Basis is a a table containing {@link StressResultantValue}- Objects. The
+	 * starting ontition for this table is, that is must contain all supporting
+	 * forces and all acting forces. Shearing forces are calculated by following
+	 * this algorythm:
+	 * <p>
 	 * 
-	 * This table is changed by the following algorythm:
-	 * 
-	 * 1: Get Qn 
-	 * 2: Get Qn+1 
+	 * 1: Get Qn <br>
+	 * 2: Get Qn+1<br>
 	 * 3: Store the sum of Qn+Qn+1 at n+1
+	 * <p>
 	 * 
-	 * The resulting table contains resulting shearing forces along the length of the
-	 * beam.
+	 * The resulting table contains resulting shearing forces along the length of
+	 * the beam.
+	 * <p>
 	 * 
 	 * For the time beeing this works only for point loads!
 	 * 
 	 * @param beam An {@link beam}- object from which the shearing forces are
 	 *             calculated.
-	 * @return A {@link ShearingForceTable}- object containing the shearing forces over the
-	 *         length of the beam.
+	 * @return A {@link StressResultantTable}- object containing the shearing forces
+	 *         over the length of the beam => Q(x)
 	 */
 
-	public static ShearingForceTable solve(Beam beam) {
-		final double sectionLength_m = 0.1;
+	public static StressResultantTable solve(Beam beam) {
+		final double sectionLength_m = 0.1; // Small values lead to more accurate results.
 
 		BeamResult result = BeamSolver.getResults(beam, "2f");
 
-		ShearingForceTable qTable = new ShearingForceTable(beam, sectionLength_m);
+		StressResultantTable qTable = new StressResultantTable(beam, sectionLength_m);
 
 		// Add supporting forces
 		Load l = new Load("A", result.getResultingForceAtLeftBearing_N(),
@@ -49,30 +51,40 @@ public class QSolver {
 		qTable.addForce(l);
 		l = new Load("B", result.getResultingForceAtRightBearing_N(),
 				beam.getBearing(1).getDistanceFromLeftEndOfBeam_m(), 0, 0);
-		qTable.addForce(l);		
-		
+		qTable.addForce(l);
+
 		// Add all point loads
 		List<Load> singleLoads = new ArrayList<Load>();
 		singleLoads = beam.getLoadsSortedByDistanceFromLeftSupportDesc();
-		for (Load load : singleLoads)
-			if (load.getLengthOfLineLoad_m() == 0)
-				qTable.addForce(load);
+		double angleOfLoadInRadians; 
+		double verticalLoad;
 		
+		for (Load load : singleLoads)
+			if (load.getLengthOfLineLoad_m() == 0) {
+				angleOfLoadInRadians = load.getAngleOfLoad_degrees() * Math.PI / 180;
+				verticalLoad = load.getForce_N() * Math.cos(angleOfLoadInRadians);
+				Load v = new Load("Hn", verticalLoad, load.getDistanceFromLeftEndOfBeam_m(), 0, 0);
+				qTable.addForce(v);
+			}
+		
+		// Superimpose line loads
+		List <Load> loads=beam.getLoads();
+		for (Load q:loads) {
+			if (q.getLengthOfLineLoad_m()>0) {
+				qTable.addDistributedLoad(q);
+			}
+		}
 
-		// Calculate shear forces from existing tablend write results back
-		ShearingForceValue qn_N, qn1_N;
-	
+		// Calculate shear forces from existing table and write results back
+		StressResultantValue qn_N, qn1_N;
+
 		for (int n = 0; n <= qTable.getLength() - 2; n++) {
 			qn_N = qTable.getShearingForceAtIndex(n);
 			qn1_N = qTable.getShearingForceAtIndex(n + 1);
 			qn1_N.addValue(qn_N.getShearingForce());
 			qTable.setAtIndex(n + 1, qn1_N);
 		}
-		
-		// Now get all line loads and superimpose them over the
-		// existing table containing the shearing forces resulting
-		// from the point loads.
-	
+
 		return qTable;
 	}
 }

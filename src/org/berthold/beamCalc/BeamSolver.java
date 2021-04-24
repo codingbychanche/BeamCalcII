@@ -76,7 +76,7 @@ public class BeamSolver {
 			spaceBetweenSupports_m = Math
 					.abs(leftSupport.getDistanceFromLeftEndOfBeam_m() - rightSupport.getDistanceFromLeftEndOfBeam_m());
 		} else {
-			BeamCalcError error = new BeamCalcError(BeamCalcError.SUPPORT_ERROR, 0, "Bearing outside of beam");
+			BeamCalcError error = new BeamCalcError(BeamCalcError.SUPPORT_ERROR, 0, "Support outside of beam");
 			result.addError(error);
 		}
 
@@ -106,11 +106,11 @@ public class BeamSolver {
 				 */
 				if (load.getLengthOfLineLoad_m() == 0) {
 
-					double angleOfLoadInRadians = load.getAngleOfLoad_degrees() * Math.PI / 180;
-
 					// If load is acting at an angle, split!
 					// load in vertical and horizontal part and increase
 					// horizontal load sum.
+					double angleOfLoadInRadians = load.getAngleOfLoad_degrees() * Math.PI / 180;
+					
 					if (load.getAngleOfLoad_degrees() != 0) {
 
 						verticalLoad = load.getForce_N() * Math.cos(angleOfLoadInRadians);
@@ -177,7 +177,7 @@ public class BeamSolver {
 			// Calculate resulting force at right bearing.
 			//
 			result.setResultingForceAtRightBearing_N(-1 * loadSumVertical - result.getResultingForceAtLeftBearing_N());
-			result.setSumOfHorizontalForcesIn_N(loadSumHorizontal);
+			result.setResultingHorizontalForceAtRightSupport_N(loadSumHorizontal);
 
 			/*
 			 * Finish strings with detail solution and add them to the result-

@@ -90,9 +90,9 @@ public class FormatSolutionString {
 		String p;
 
 		if (angle == 0)
-			p = force + " N";
+			p = -1*force + " N";
 		else
-			p = force + " N x sin(" + angle + ")";
+			p = -1*force + " N x sin(" + angle + ")";
 		return p;
 	}
 
