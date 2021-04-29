@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Creates a table of shearing forces along the length of a {@link Beam}. q(x)
- * => Q(x)
+ * Creates a table of shearing forces along the length of a {@link Beam}.<br>
+ * q(x)=> Q(x)
  * 
  * @author Berthold
  *
@@ -16,7 +16,7 @@ public class QSolver {
 	 * Calculates the shearing forces along the length of the beam.
 	 * 
 	 * Basis is a a table containing {@link StressResultantValue}- Objects. The
-	 * starting ontition for this table is, that is must contain all supporting
+	 * starting contition for this table is, that is must contain all supporting
 	 * forces and all acting forces. Shearing forces are calculated by following
 	 * this algorythm:
 	 * <p>
@@ -25,8 +25,7 @@ public class QSolver {
 	 * 2: Get Qn+1<br>
 	 * 3: Store the sum of Qn+Qn+1 at n+1
 	 * <p>
-	 * 
-	 * The resulting table contains resulting shearing forces along the length of
+	 * The resulting table contains the shearing forces along the length of
 	 * the beam.
 	 * <p>
 	 * 
@@ -37,9 +36,8 @@ public class QSolver {
 	 * @return A {@link StressResultantTable}- object containing the shearing forces
 	 *         over the length of the beam => Q(x)
 	 */
-
 	public static StressResultantTable solve(Beam beam) {
-		final double sectionLength_m = 0.1; // Small values lead to more accurate results.
+		final double sectionLength_m = .001; // Small values lead to more accurate results.
 
 		BeamResult result = BeamSolver.getResults(beam, "2f");
 
@@ -54,12 +52,12 @@ public class QSolver {
 		qTable.addForce(l);
 
 		// Add all point loads
-		List<Load> singleLoads = new ArrayList<Load>();
-		singleLoads = beam.getLoadsSortedByDistanceFromLeftSupportDesc();
+		List<Load> pointLoads = new ArrayList<Load>();
+		pointLoads = beam.getLoadsSortedByDistanceFromLeftSupportDesc();
 		double angleOfLoadInRadians; 
 		double verticalLoad;
 		
-		for (Load load : singleLoads)
+		for (Load load : pointLoads)
 			if (load.getLengthOfLineLoad_m() == 0) {
 				angleOfLoadInRadians = load.getAngleOfLoad_degrees() * Math.PI / 180;
 				verticalLoad = load.getForce_N() * Math.cos(angleOfLoadInRadians);
@@ -67,7 +65,7 @@ public class QSolver {
 				qTable.addForce(v);
 			}
 		
-		// Superimpose line loads
+		// Superimpose uniformingly distributed loads
 		List <Load> loads=beam.getLoads();
 		for (Load q:loads) {
 			if (q.getLengthOfLineLoad_m()>0) {
@@ -75,7 +73,7 @@ public class QSolver {
 			}
 		}
 
-		// Calculate shear forces from existing table and write results back
+		// Calculate shearing forces from existing table and write results back
 		StressResultantValue qn_N, qn1_N;
 
 		for (int n = 0; n <= qTable.getLength() - 2; n++) {
@@ -83,8 +81,10 @@ public class QSolver {
 			qn1_N = qTable.getShearingForceAtIndex(n + 1);
 			qn1_N.addValue(qn_N.getShearingForce());
 			qTable.setAtIndex(n + 1, qn1_N);
+			
+			if (Math.signum(qn_N.getShearingForce())!=Math.signum(qn1_N.getShearingForce()))
+					qTable.getShearingForceAtIndex(n).setZeroPoint(true);
 		}
-
 		return qTable;
 	}
 }
