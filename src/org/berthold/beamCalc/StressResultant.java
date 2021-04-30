@@ -9,9 +9,9 @@ package org.berthold.beamCalc;
  *
  */
 
-public class StressResultantValue {
+public class StressResultant {
 	private double x_m;
-	private double shearingForceValue;
+	private double stressResultantValue;
 
 	// Discontinuiuty=> A single load acting or start/ end of
 	// a distributed load.
@@ -20,9 +20,9 @@ public class StressResultantValue {
 	// in Q(x) and M(x).
 	private boolean isDiscontiunuity;
 	private double shearingForceDeltaBy; // Force acting here!
-	
+
 	private boolean isZeroPoint; // Zero points in Q(x) are maxima in M(x).
-	private boolean isMaxima;	
+	private boolean isMaxima;
 
 	/**
 	 * Creates a new Stress resltant value.
@@ -30,10 +30,10 @@ public class StressResultantValue {
 	 * @param x_m                Distance from left end of beam.
 	 * @param shearingForceValue Force acting.
 	 */
-	public StressResultantValue(double x_m, double shearingForceValue) {
+	public StressResultant(double x_m, double shearingForceValue) {
 		super();
 		this.x_m = x_m;
-		this.shearingForceValue = shearingForceValue;
+		this.stressResultantValue = shearingForceValue;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class StressResultantValue {
 	 * @return
 	 */
 	public double getShearingForce() {
-		return shearingForceValue;
+		return stressResultantValue;
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class StressResultantValue {
 	 * @param f_N Stress resltant value magnitute.
 	 */
 	public void setShearingForce(double f_N) {
-		this.shearingForceValue = f_N;
+		this.stressResultantValue = f_N;
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class StressResultantValue {
 	 * @param value Sheraing force to be added to this value.
 	 */
 	public void addValue(double value) {
-		this.shearingForceValue = this.shearingForceValue + value;
+		this.stressResultantValue = this.stressResultantValue + value;
 	}
 
 	/**
@@ -87,31 +87,46 @@ public class StressResultantValue {
 	 * @param value
 	 */
 	public void multiplyValue(double value) {
-		this.shearingForceValue = this.shearingForceValue * value;
+		this.stressResultantValue = this.stressResultantValue * value;
 	}
 
+	/**
+	 * The magnitute of this stress resultant.
+	 * 
+	 * @return Shearing force magnitute.
+	 */
 	public double getShearingForceValue() {
-		return shearingForceValue;
+		return stressResultantValue;
 	}
 
+	/**
+	 * 
+	 * Repleaces the current value of this stress resultant with the new one.
+	 * 
+	 * @param shearingForceValue New value for this shearing force.
+	 */
 	public void setShearingForceValue(double shearingForceValue) {
-		this.shearingForceValue = shearingForceValue;
+		this.stressResultantValue = shearingForceValue;
 	}
 
+	/**
+	 * Marks if this shearing force acts at a point of disconuinity. This Value is
+	 * set when a {@link StressResultantTable} is initalized either by the
+	 * {@link Qsolver}- or the {@link MSolver} class.
+	 * 
+	 * @return True if/ fals if no disconuinity.
+	 */
 	public boolean isDiscontiunuity() {
 		return isDiscontiunuity;
 	}
 
+	/**
+	 * Marks if this shearing force acts at a point of disconuinity. This Value is
+	 * set when a {@link StressResultantTable} is initalized either by the
+	 * {@link Qsolver}- or the {@link MSolver} class.
+	 */
 	public void setDiscontiunuity(boolean isDiscontiunuity) {
 		this.isDiscontiunuity = isDiscontiunuity;
-	}
-
-	public double getShearingForceDeltaBy() {
-		return shearingForceDeltaBy;
-	}
-
-	public void setShearingForceDeltaBy(double shearingForceDeltaBy) {
-		this.shearingForceDeltaBy = shearingForceDeltaBy;
 	}
 
 	public boolean isZeroPoint() {
@@ -122,6 +137,14 @@ public class StressResultantValue {
 		this.isZeroPoint = isZeroPoint;
 	}
 
+	public double getShearingForceDeltaBy() {
+		return shearingForceDeltaBy;
+	}
+
+	public void setShearingForceDeltaBy(double shearingForceDeltaBy) {
+		this.shearingForceDeltaBy = shearingForceDeltaBy;
+	}
+
 	public boolean isMaxima() {
 		return isMaxima;
 	}
@@ -129,6 +152,5 @@ public class StressResultantValue {
 	public void setMaxima(boolean isMaxima) {
 		this.isMaxima = isMaxima;
 	}
-	
-	
+
 }

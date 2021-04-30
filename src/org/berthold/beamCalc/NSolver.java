@@ -14,7 +14,7 @@ public class NSolver {
 	/**
 	 * Calculates the normal forces along the length of the beam.
 	 * 
-	 * Basis is a a table containing {@link StressResultantValue}- Objects. <p>
+	 * Basis is a a table containing {@link StressResultant}- Objects. <p>
 	 * 
 	 * 1: Get Nn <br>
 	 * 2: Get Nn+1<br>
@@ -61,7 +61,7 @@ public class NSolver {
 
 			// Calculate normal forces from existing table and write results back
 			// Calculate from left beam end in the direction of the pin support
-			StressResultantValue nn_N, nn1_N;
+			StressResultant nn_N, nn1_N;
 			double x = 0;
 			for (int n = 0; n <= nTable.getLength() - 2; n++) {
 				nn_N = nTable.getShearingForceAtIndex(n);

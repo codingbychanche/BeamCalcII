@@ -15,18 +15,18 @@ public class QSolver {
 	/**
 	 * Calculates the shearing forces along the length of the beam.
 	 * 
-	 * Basis is a a table containing {@link StressResultantValue}- Objects. The
-	 * starting contition for this table is, that is must contain all supporting
-	 * forces and all acting forces. Shearing forces are calculated by following
-	 * this algorythm:
+	 * Basis is a a table containing {@link StressResultant}- Objects. The starting
+	 * contition for this table is, that is must contain all supporting forces and
+	 * all acting forces.
 	 * <p>
-	 * 
+	 * Shearing forces are calculated by following this algorithm:
+	 * <p>
 	 * 1: Get Qn <br>
 	 * 2: Get Qn+1<br>
 	 * 3: Store the sum of Qn+Qn+1 at n+1
 	 * <p>
-	 * The resulting table contains the shearing forces along the length of
-	 * the beam.
+	 * The resulting table contains the shearing forces along the length of the
+	 * beam.
 	 * <p>
 	 * 
 	 * For the time beeing this works only for point loads!
@@ -54,9 +54,9 @@ public class QSolver {
 		// Add all point loads
 		List<Load> pointLoads = new ArrayList<Load>();
 		pointLoads = beam.getLoadsSortedByDistanceFromLeftSupportDesc();
-		double angleOfLoadInRadians; 
+		double angleOfLoadInRadians;
 		double verticalLoad;
-		
+
 		for (Load load : pointLoads)
 			if (load.getLengthOfLineLoad_m() == 0) {
 				angleOfLoadInRadians = load.getAngleOfLoad_degrees() * Math.PI / 180;
@@ -64,26 +64,27 @@ public class QSolver {
 				Load v = new Load("Hn", verticalLoad, load.getDistanceFromLeftEndOfBeam_m(), 0, 0);
 				qTable.addForce(v);
 			}
-		
+
 		// Superimpose uniformingly distributed loads
-		List <Load> loads=beam.getLoads();
-		for (Load q:loads) {
-			if (q.getLengthOfLineLoad_m()>0) {
+		List<Load> loads = beam.getLoads();
+		for (Load q : loads) {
+			if (q.getLengthOfLineLoad_m() > 0) {
 				qTable.addDistributedLoad(q);
 			}
 		}
 
 		// Calculate shearing forces from existing table and write results back
-		StressResultantValue qn_N, qn1_N;
+		StressResultant qn_N, qn1_N;
 
 		for (int n = 0; n <= qTable.getLength() - 2; n++) {
 			qn_N = qTable.getShearingForceAtIndex(n);
 			qn1_N = qTable.getShearingForceAtIndex(n + 1);
 			qn1_N.addValue(qn_N.getShearingForce());
 			qTable.setAtIndex(n + 1, qn1_N);
-			
-			if (Math.signum(qn_N.getShearingForce())!=Math.signum(qn1_N.getShearingForce()))
-					qTable.getShearingForceAtIndex(n).setZeroPoint(true);
+		
+
+			if (Math.signum(qn_N.getShearingForce()) != Math.signum(qn1_N.getShearingForce()))
+				qTable.getShearingForceAtIndex(n).setZeroPoint(true);
 		}
 		return qTable;
 	}

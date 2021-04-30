@@ -23,7 +23,7 @@ public class MSolver {
 	 * 
 	 * @param qTable
 	 * @param beam
-	 * @return A table of {@link StressResultantValue}- objects containing the
+	 * @return A table of {@link StressResultant}- objects containing the
 	 *         bending moments along the beam => M(x).
 	 */
 	public static StressResultantTable solve(StressResultantTable qTable, Beam beam) {
