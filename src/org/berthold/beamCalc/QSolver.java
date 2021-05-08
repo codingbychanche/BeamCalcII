@@ -37,7 +37,7 @@ public class QSolver {
 	 *         over the length of the beam => Q(x)
 	 */
 	public static StressResultantTable solve(Beam beam) {
-		final double sectionLength_m = .001; // Small values lead to more accurate results.
+		final double sectionLength_m = .0001; // Small values lead to more accurate results.
 
 		BeamResult result = BeamSolver.getResults(beam, "2f");
 

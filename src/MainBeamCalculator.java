@@ -24,9 +24,9 @@ public class MainBeamCalculator {
 
 		// Add loads
 		// NAME/ Force/ Distance/ Angle /Length
-		//myBeam.addLoad(new Load("F1", -2.0, 2, 0, 0));
-		//myBeam.addLoad(new Load("F2", -3, 4,0, 0));
-		myBeam.addLoad(new Load("q1", -5, 0, 0, 4));
+		myBeam.addLoad(new Load("F1", -2.0, 2, 0, 0));
+		myBeam.addLoad(new Load("F2", -3, 3,0, 0));
+		//myBeam.addLoad(new Load("q1", -5, 0, 0, 4));
 		//myBeam.addLoad(new Load("q2", -2, 1, 0, 3));
 		//myBeam.addLoad(new Load("q3", -4, 2, 0, 2));
 
@@ -85,6 +85,9 @@ public class MainBeamCalculator {
 							+ v.getShearingForce()+" N");
 			}
 			
+			StressResultantDraw d=new StressResultantDraw("Q",myBeam,qTable,200,400,10,10);
+			d.draw();
+			
 			//for (StressResultant r:qTable.getShearingForceTable()) {
 			//	System.out.println("x="+r.getX_m()+"    Q="+r.getShearingForce()+" DIS="+r.isDiscontiunuity()+"    Zero="+r.isZeroPoint());
 			//}
@@ -102,6 +105,8 @@ public class MainBeamCalculator {
 				if (v.isDiscontiunuity())
 					System.out.println("x=" + v.getX_m() + " m   M=" + v.getShearingForce()+" Nm");
 			}
+			StressResultantDraw m=new StressResultantDraw("M",myBeam,mTable,200,400,10,10);
+			m.draw();
 			
 			//for (StressResultant r:mTable.getShearingForceTable()) {
 			//	System.out.println("x="+r.getX_m()+"    M="+r.getShearingForce());

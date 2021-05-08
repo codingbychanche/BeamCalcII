@@ -163,4 +163,50 @@ public class StressResultantTable {
 	public List<StressResultant> getShearingForceTable() {
 		return sfValues;
 	}
+	
+	/**
+	 * Determines the biggest value in this table.
+	 * 
+	 * @return Biggest stress resultant of ths table.
+	 */
+	
+	public double getAbsMax() {
+		double max=0;
+		double currentMax;
+		
+		for (int i=0;i<=sfValues.size()-1;i++) {
+			currentMax=sfValues.get(i).getShearingForce();
+			if (currentMax>max)
+				max=currentMax;
+		}
+		return max;
+	}
+	
+	/**
+	 * Determines the smallest value in this table.
+	 * 
+	 * @return The smallest stress resultant of this table.
+	 */
+	public double getAbsMin() {
+		double min=0;
+		double currentMin;
+		
+		for (int i=0;i<=sfValues.size()-1;i++) {
+			currentMin=sfValues.get(i).getShearingForce();
+			if (currentMin<min)
+				min=currentMin;
+		}
+		return min;
+	}
+	
+	/**
+	 * Determines the biggest x- value, which is in fact the length
+	 * of the asociated beam.
+	 * 
+	 * @return Beggest x- value.
+	 */
+	public double getAbsMaxX() {
+		int last=sfValues.size()-1;
+		return sfValues.get(last).getX_m();
+	}
 }
