@@ -18,7 +18,9 @@ Loads can also act at an angle.
 Graphical solution:
 
 ![](Q.png)
+
 ![](M.png)
+
 You can get the Android app here:
 [Google Play, Beam Calc](https://play.google.com/store/apps/details?id=berthold.beamcalc)
 
