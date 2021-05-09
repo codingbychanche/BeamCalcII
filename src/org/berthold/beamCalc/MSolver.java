@@ -23,12 +23,13 @@ public class MSolver {
 	 * 
 	 * @param qTable
 	 * @param beam
+	 * @param unit The unit (N, kN.....).
 	 * @return A table of {@link StressResultant}- objects containing the
 	 *         bending moments along the beam => M(x).
 	 */
-	public static StressResultantTable solve(StressResultantTable qTable, Beam beam) {
+	public static StressResultantTable solve(StressResultantTable qTable, Beam beam,String unit) {
 
-		StressResultantTable mTable = new StressResultantTable(beam, qTable.getSectionLength_m());
+		StressResultantTable mTable = new StressResultantTable(beam, qTable.getSectionLength_m(),unit);
 	
 		double m_Nm = 0;
 		double m1_Nm = 0;

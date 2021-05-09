@@ -28,14 +28,15 @@ public class NSolver {
 	 * For the time beeing this works only for point loads!
 	 * 
 	 * @param beam A {@link Beam}- object.
+	 * @param unit The unit (N, kN.....).
 	 * @return {@link ShearingForceTable} containing the normal forces along the
 	 *         beam. If the beam has no pin support, null is returned.
 	 */
-	public static StressResultantTable solve(Beam beam) {
+	public static StressResultantTable solve(Beam beam,String unit) {
 
 		final double sectionLength_m = 0.001; // Small values lead to more accurate results.
 
-		StressResultantTable nTable = new StressResultantTable(beam, sectionLength_m);
+		StressResultantTable nTable = new StressResultantTable(beam, sectionLength_m,unit);
 
 		// Add all point loads
 		List<Load> singleLoads = new ArrayList<Load>();

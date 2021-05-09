@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -61,8 +62,6 @@ public class StressResultantDraw {
 		yMax = stressResultantsTable.getAbsMax();
 		yMin =  stressResultantsTable.getAbsMin();
 		xMax =  stressResultantsTable.getAbsMaxX();
-		
-		System.out.println("YM "+this.yMax+" YMIN"+ this.yMin+"   XM "+this.xMax+ "    y0="+this.y0_px);
 	}
 
 	public void draw() {
@@ -73,13 +72,11 @@ public class StressResultantDraw {
 			// Grab the graphics object off the image
 			Graphics2D graphics = img.createGraphics();
 			
-			Color color = new Color(255, 255, 255);
-			graphics.setBackground(color);
+			graphics.setBackground(Color.WHITE);
 
-			color = new Color(50, 50, 50);
-			Stroke stroke = new BasicStroke(1f);
+			Stroke stroke = new BasicStroke(.1f);
 			graphics.setStroke(stroke);
-			graphics.setColor(color);
+			graphics.setColor(Color.BLACK);
 			
 			// Datum
 			graphics.drawLine(padX_px,y0_px,width_px-padX_px,y0_px);
@@ -93,8 +90,7 @@ public class StressResultantDraw {
 			// Draw stress resultants.
 			for (StressResultant r: stressResultantsTable.sfValues) {
 				// Stress resultant
-				color = new Color(200,0,0);
-				graphics.setColor(color);
+				graphics.setColor(Color.RED);
 				
 				// Transform
 				double y=r.getShearingForce();
@@ -103,11 +99,10 @@ public class StressResultantDraw {
 				graphics.drawLine((int)getXT(x),(int) getYT(y),(int) getXT(x),(int) getYT(y));
 				
 				if (r.isDiscontiunuity()) {
-					color = new Color(0,0,0);
-					graphics.setColor(color);
+					graphics.setColor(Color.GRAY);
 					graphics.drawLine((int)getXT(x),padY_px,(int)getXT(x),height_px-padY_px);
 					
-					graphics.drawString(r.getShearingForce()+" --",(int)getXT(x),(int)getYT(y));
+					graphics.drawString(r.getShearingForce()+" "+r.getUnit(),(int)getXT(x),(int)getYT(y));
 				}
 			}
 			

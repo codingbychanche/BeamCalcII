@@ -3,8 +3,6 @@ package org.berthold.beamCalc;
 /**
  * Stress resltant value consisting of a x- coordinate and a force acting.
  * 
- * Acts as a helper- class for the {@link QSolver}- class.
- * 
  * @author Berthold
  *
  */
@@ -12,6 +10,7 @@ package org.berthold.beamCalc;
 public class StressResultant {
 	private double x_m;
 	private double stressResultantValue;
+	private String unit;
 
 	// Discontinuiuty=> A single load acting or start/ end of
 	// a distributed load.
@@ -29,11 +28,13 @@ public class StressResultant {
 	 * 
 	 * @param x_m                Distance from left end of beam.
 	 * @param shearingForceValue Force acting.
+	 * @param unit	The unit (N, Nm etc...).
 	 */
-	public StressResultant(double x_m, double shearingForceValue) {
+	public StressResultant(double x_m, double shearingForceValue,String unit) {
 		super();
 		this.x_m = x_m;
 		this.stressResultantValue = shearingForceValue;
+		this.unit=unit;
 	}
 
 	/**
@@ -127,6 +128,14 @@ public class StressResultant {
 	 */
 	public void setDiscontiunuity(boolean isDiscontiunuity) {
 		this.isDiscontiunuity = isDiscontiunuity;
+	}
+	
+	/**
+	 * The unit of this stress resultant.
+	 * @return	Unit e.g. N, Nm etc...
+	 */
+	public String getUnit() {
+		return unit;
 	}
 
 	public boolean isZeroPoint() {

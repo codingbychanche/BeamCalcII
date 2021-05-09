@@ -19,9 +19,11 @@ public class StressResultantTable {
 
 	private static final int DISCONTIUNUITY_THRESHOLD = 1;
 
-	List<StressResultant> sfValues = new ArrayList<StressResultant>();
-	double sectionLength_m;
-	Beam beam;
+	public List<StressResultant> sfValues = new ArrayList<StressResultant>(); // Create getter/ setter :-(
+	
+	private double sectionLength_m;
+	private Beam beam;
+	private String unit;
 
 	/**
 	 * A new Stress resultant table.
@@ -32,13 +34,14 @@ public class StressResultantTable {
 	 * @param beam            A {@link Beam}- object from which the table is build.
 	 * @param sectionLength_m Sections between the forces acting.
 	 */
-	public StressResultantTable(Beam beam, double sectionLength_m) {
+	public StressResultantTable(Beam beam, double sectionLength_m, String unit) {
 		this.beam = beam;
 		this.sectionLength_m = sectionLength_m;
+		this.unit=unit;
 
 		// Create empty list with acting forces and add supporting forces
 		for (double x_m = 0; x_m <= (beam.getLength()); x_m = x_m + sectionLength_m) {
-			StressResultant q = new StressResultant(x_m, 0);
+			StressResultant q = new StressResultant(x_m, 0,unit);
 			sfValues.add(q);
 		}
 	}

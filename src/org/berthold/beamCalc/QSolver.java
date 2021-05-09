@@ -32,16 +32,19 @@ public class QSolver {
 	 * For the time beeing this works only for point loads!
 	 * 
 	 * @param beam An {@link beam}- object from which the shearing forces are
-	 *             calculated.
+	 *             calculated.	  
+	 * @param unit The unit (N, kN.....).
+	 * 
 	 * @return A {@link StressResultantTable}- object containing the shearing forces
 	 *         over the length of the beam => Q(x)
+	 * 
 	 */
-	public static StressResultantTable solve(Beam beam) {
-		final double sectionLength_m = .0001; // Small values lead to more accurate results.
+	public static StressResultantTable solve(Beam beam, String unit) {
+		final double sectionLength_m = .001; // Small values lead to more accurate results.
 
 		BeamResult result = BeamSolver.getResults(beam, "2f");
 
-		StressResultantTable qTable = new StressResultantTable(beam, sectionLength_m);
+		StressResultantTable qTable = new StressResultantTable(beam, sectionLength_m,unit);
 
 		// Add supporting forces
 		Load l = new Load("A", result.getResultingForceAtLeftBearing_N(),
@@ -81,7 +84,6 @@ public class QSolver {
 			qn1_N = qTable.getShearingForceAtIndex(n + 1);
 			qn1_N.addValue(qn_N.getShearingForce());
 			qTable.setAtIndex(n + 1, qn1_N);
-		
 
 			if (Math.signum(qn_N.getShearingForce()) != Math.signum(qn1_N.getShearingForce()))
 				qTable.getShearingForceAtIndex(n).setZeroPoint(true);

@@ -75,17 +75,17 @@ public class MainBeamCalculator {
 			//
 			System.out.println("");
 			System.out.println("Shearing forces => Q");
-			StressResultantTable qTable = QSolver.solve(myBeam);
+			StressResultantTable qTable = QSolver.solve(myBeam,"N");
 
 			for (int n = 0; n <= qTable.getLength() - 1; n++) {
 				StressResultant v = qTable.getShearingForceAtIndex(n);
 
 				if (v.isDiscontiunuity())
-					System.out.println("x=" + v.getX_m() + " m Delta=" + v.getShearingForceDeltaBy() + " N   Q[N]="+
+					System.out.println("x=" + v.getX_m() + " m Delta=" + v.getShearingForceDeltaBy() + " "+v.getUnit()+"   Q[N]="+
 							+ v.getShearingForce()+" N");
 			}
 			
-			StressResultantDraw d=new StressResultantDraw("Q",myBeam,qTable,200,400,10,10);
+			StressResultantDraw d=new StressResultantDraw("Q",myBeam,qTable,400,800,10,10);
 			d.draw();
 			
 			//for (StressResultant r:qTable.getShearingForceTable()) {
@@ -97,15 +97,15 @@ public class MainBeamCalculator {
 			//
 			System.out.println("");
 			System.out.println("Shearing forces => M");
-			StressResultantTable mTable = MSolver.solve(qTable, myBeam);
+			StressResultantTable mTable = MSolver.solve(qTable, myBeam,"Nm");
 
 			for (int n = 0; n <= mTable.getLength() - 1; n++) {
 				StressResultant v = mTable.getShearingForceAtIndex(n);
 
 				if (v.isDiscontiunuity())
-					System.out.println("x=" + v.getX_m() + " m   M=" + v.getShearingForce()+" Nm");
+					System.out.println("x=" + v.getX_m() + " m   M=" + v.getShearingForce()+" "+v.getUnit());
 			}
-			StressResultantDraw m=new StressResultantDraw("M",myBeam,mTable,200,400,10,10);
+			StressResultantDraw m=new StressResultantDraw("M",myBeam,mTable,400,800,10,10);
 			m.draw();
 			
 			//for (StressResultant r:mTable.getShearingForceTable()) {
@@ -117,13 +117,13 @@ public class MainBeamCalculator {
 			//
 			System.out.println("");
 			System.out.println("Normal forces => N");
-			StressResultantTable nTable = NSolver.solve(myBeam);
+			StressResultantTable nTable = NSolver.solve(myBeam,"N");
 
 			for (int n = 0; n <= nTable.getLength() - 1; n++) {
 				StressResultant v = nTable.getShearingForceAtIndex(n);
 
 				if (v.isDiscontiunuity())
-					System.out.println("x=" + v.getX_m() + " m   N[N]=" + v.getShearingForce()+" N");
+					System.out.println("x=" + v.getX_m() + " m   N[N]=" + v.getShearingForce()+" "+v.getUnit());
 			}
 
 		} else
