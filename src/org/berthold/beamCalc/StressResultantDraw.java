@@ -32,7 +32,7 @@ public class StressResultantDraw {
 	String leftSupportName,rightSupportName;
 	
 	// Constants for the GFX- window
-	private final int Y_OFFSET_ANOTATION=15;
+	private final int Y_OFFSET_ANNOTATION=15;
 	
 	/**
 	 * Creates a new image.
@@ -95,12 +95,12 @@ public class StressResultantDraw {
 			int xTLeft=(int)getXT(leftSupportX);
 			graphics.drawLine(xTLeft,(int)padY_px,xTLeft,(int)height_px-padY_px);
 			dimFormated=String.format(numberFormat,leftSupportX);
-			graphics.drawString(leftSupportName+" "+dimFormated+" m",xTLeft,(int)getYT(0)+Y_OFFSET_ANOTATION);
+			graphics.drawString(leftSupportName+" "+dimFormated+" m",xTLeft,(int)getYT(0)+Y_OFFSET_ANNOTATION);
 			
 			int xTRight=(int)getXT(rightSupportX);
 			graphics.drawLine(xTRight,(int)padY_px,xTRight,(int)height_px-padY_px);
 			dimFormated=String.format(numberFormat,rightSupportX);
-			graphics.drawString(rightSupportName+" "+dimFormated+" m",xTRight,(int)getYT(0)+Y_OFFSET_ANOTATION);
+			graphics.drawString(rightSupportName+" "+dimFormated+" m",xTRight,(int)getYT(0)+Y_OFFSET_ANNOTATION);
 			
 			// Draw stress resultants.
 			for (StressResultant r: stressResultantsTable.sfValues) {
