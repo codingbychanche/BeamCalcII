@@ -40,8 +40,8 @@ public class MSolver {
 
 		for (int n = 0; n <= qTable.getLength() - 2; n++) {
        
-			
 			q_N = qTable.getShearingForceAtIndex(n).getShearingForce();
+		
 			q1_N = qTable.getShearingForceAtIndex(n + 1).getShearingForce();
 			double deltaQ_N = q1_N - q_N;
 
@@ -51,7 +51,9 @@ public class MSolver {
 				m_Nm = q_N * x;
 				m1_Nm = q1_N * (x + sectionLength_m);
 				deltaM_Nm = m1_Nm - m_Nm;
-			} else {
+				
+	
+	} else {
 				
 			}
 			
@@ -64,6 +66,13 @@ public class MSolver {
 				mTable.getShearingForceAtIndex(n).setDiscontiunuity(true);
 				mTable.getShearingForceAtIndex(n).setShearingForceDeltaBy(m_Nm+deltaM_Nm);
 			}	
+			
+			// Check for zero points in Q(x). Zero points are local
+			// maxima in M(x).
+			if (qTable.getShearingForceAtIndex(n).isZeroPoint()) 
+				mTable.getShearingForceAtIndex(n).setMaxima(true);
+			
+	
 
 			// Next
 			x = x + sectionLength_m;

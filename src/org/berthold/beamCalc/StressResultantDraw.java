@@ -24,11 +24,15 @@ public class StressResultantDraw {
 	private Beam beam;
 	private StressResultantTable stressResultantsTable;
 	private int height_px, width_px, padX_px, padY_px;
+	private String numberFormat;
 	private int y0_px;
 	double yMax, yMin, xMax;
 
 	double leftSupportX, rightSupportX;
+	String leftSupportName,rightSupportName;
 	
+	// Constants for the GFX- window
+	private final int Y_OFFSET_ANOTATION=15;
 	
 	/**
 	 * Creates a new image.
@@ -40,9 +44,10 @@ public class StressResultantDraw {
 	 * @param width_px	The width of the image in pixels.
 	 * @param padX_px	Padding in pixels at the left and right side of the image.
 	 * @param padY_px	Padding in pixels at the top and bottom of the image.
+	 * @param numberFormat	Number format... (e.g. %.2f = two decimal places).
 	 */
 	public StressResultantDraw(String name,Beam beam,StressResultantTable stressResultants, int height_px, int width_px, int padX_px,
-			int padY_px) {
+			int padY_px,String numberFormat) {
 		super();
 		
 		this.name=name;
@@ -52,10 +57,14 @@ public class StressResultantDraw {
 		this.width_px = width_px;
 		this.padX_px = padX_px;
 		this.padY_px = padY_px;
+		this.numberFormat=numberFormat;
 
 		// Beam
 		leftSupportX=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(0).getDistanceFromLeftEndOfBeam_m();
+		leftSupportName=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(0).getNameOfSupport();
+		
 		rightSupportX=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(1).getDistanceFromLeftEndOfBeam_m();
+		rightSupportName=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(1).getNameOfSupport();
 		
 		// Constants efining the gfx- window
 		y0_px = height_px / 2;
@@ -82,10 +91,16 @@ public class StressResultantDraw {
 			graphics.drawLine(padX_px,y0_px,width_px-padX_px,y0_px);
 			
 			// Supports
+			String dimFormated;
 			int xTLeft=(int)getXT(leftSupportX);
-			int xTRight=(int)getXT(rightSupportX);
 			graphics.drawLine(xTLeft,(int)padY_px,xTLeft,(int)height_px-padY_px);
+			dimFormated=String.format(numberFormat,leftSupportX);
+			graphics.drawString(leftSupportName+" "+dimFormated+" m",xTLeft,(int)getYT(0)+Y_OFFSET_ANOTATION);
+			
+			int xTRight=(int)getXT(rightSupportX);
 			graphics.drawLine(xTRight,(int)padY_px,xTRight,(int)height_px-padY_px);
+			dimFormated=String.format(numberFormat,rightSupportX);
+			graphics.drawString(rightSupportName+" "+dimFormated+" m",xTRight,(int)getYT(0)+Y_OFFSET_ANOTATION);
 			
 			// Draw stress resultants.
 			for (StressResultant r: stressResultantsTable.sfValues) {
@@ -98,11 +113,20 @@ public class StressResultantDraw {
 				
 				graphics.drawLine((int)getXT(x),(int) getYT(y),(int) getXT(x),(int) getYT(y));
 				
+				String shFormated;
 				if (r.isDiscontiunuity()) {
 					graphics.setColor(Color.GRAY);
 					graphics.drawLine((int)getXT(x),padY_px,(int)getXT(x),height_px-padY_px);
 					
-					graphics.drawString(r.getShearingForce()+" "+r.getUnit(),(int)getXT(x),(int)getYT(y));
+					graphics.setColor(Color.RED);
+					
+					shFormated=String.format(numberFormat,r.getShearingForce());					
+					graphics.drawString(shFormated+" "+r.getUnit(),(int)getXT(x),(int)getYT(y));
+				}
+				
+				if(r.isMaxima()) {
+					graphics.setColor(Color.BLUE);
+					graphics.drawLine((int)getXT(x),padY_px,(int)getXT(x),height_px-padY_px);
 				}
 			}
 			

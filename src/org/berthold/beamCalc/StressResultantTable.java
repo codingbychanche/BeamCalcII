@@ -153,15 +153,14 @@ public class StressResultantTable {
 		}
 
 		// Debug....
-		// for (StressResultant v : this.sfValues)
-		// System.out.println("x=" + v.getX_m() + " Q=" + v.getShearingForce()+"
-		// dis="+v.isDiscontiunuity());
+		//for (StressResultant v : this.sfValues)
+		//System.out.println("x=" + v.getX_m() + " Q=" + v.getShearingForce()+"dis="+v.isDiscontiunuity());
 	}
 
 	/**
 	 * List of shearing forces.
 	 * 
-	 * @return This list of {@link StressResultant}- o bjects.
+	 * @return This list of {@link StressResultant}- objects.
 	 */
 	public List<StressResultant> getShearingForceTable() {
 		return sfValues;

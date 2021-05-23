@@ -20,7 +20,7 @@ public class StressResultant {
 	private boolean isDiscontiunuity;
 	private double shearingForceDeltaBy; // Force acting here!
 
-	private boolean isZeroPoint; // Zero points in Q(x) are maxima in M(x).
+	private boolean isZeroPoint; 
 	private boolean isMaxima;
 
 	/**

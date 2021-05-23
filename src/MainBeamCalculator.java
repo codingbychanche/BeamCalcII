@@ -19,14 +19,16 @@ public class MainBeamCalculator {
 
 		// Create a new beam
 		Beam myBeam = new Beam(4);
-		myBeam.addBearing(new Support("Left bearing", 0, Support.ROLLER_SUPPORT));
-		myBeam.addBearing(new Support("Right bearing", 4, Support.PIN_SUPPORT));
+		myBeam.addBearing(new Support("Left bearing", 1, Support.ROLLER_SUPPORT));
+		myBeam.addBearing(new Support("Right bearing", 3.5, Support.PIN_SUPPORT));
 
 		// Add loads
 		// NAME/ Force/ Distance/ Angle /Length
 		myBeam.addLoad(new Load("F1", -2.0, 2, 0, 0));
 		myBeam.addLoad(new Load("F2", -3, 3,0, 0));
 		//myBeam.addLoad(new Load("q1", -5, 0, 0, 4));
+		
+		
 		//myBeam.addLoad(new Load("q2", -2, 1, 0, 3));
 		//myBeam.addLoad(new Load("q3", -4, 2, 0, 2));
 
@@ -85,7 +87,7 @@ public class MainBeamCalculator {
 							+ v.getShearingForce()+" N");
 			}
 			
-			StressResultantDraw d=new StressResultantDraw("Q",myBeam,qTable,400,800,10,10);
+			StressResultantDraw d=new StressResultantDraw("Q",myBeam,qTable,400,800,10,10,"%.2f");
 			d.draw();
 			
 			//for (StressResultant r:qTable.getShearingForceTable()) {
@@ -105,7 +107,17 @@ public class MainBeamCalculator {
 				if (v.isDiscontiunuity())
 					System.out.println("x=" + v.getX_m() + " m   M=" + v.getShearingForce()+" "+v.getUnit());
 			}
-			StressResultantDraw m=new StressResultantDraw("M",myBeam,mTable,400,800,10,10);
+			
+			System.out.println("Local maxi-/  minima");
+			for (int n = 0; n <= mTable.getLength() - 1; n++) {
+				StressResultant v = mTable.getShearingForceAtIndex(n);
+				if (v.isZeroPoint())
+					System.out.println("x=" + v.getX_m() + " m   M=" + v.getShearingForce()+" "+v.getUnit());
+			}
+			
+			
+			
+			StressResultantDraw m=new StressResultantDraw("M",myBeam,mTable,400,800,10,10,"%.2f");
 			m.draw();
 			
 			//for (StressResultant r:mTable.getShearingForceTable()) {
@@ -125,6 +137,9 @@ public class MainBeamCalculator {
 				if (v.isDiscontiunuity())
 					System.out.println("x=" + v.getX_m() + " m   N[N]=" + v.getShearingForce()+" "+v.getUnit());
 			}
+			
+			StressResultantDraw n=new StressResultantDraw("N",myBeam,nTable,400,800,10,10,"%.2f");
+			n.draw();
 
 		} else
 			showErrors(result);
