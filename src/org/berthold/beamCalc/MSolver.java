@@ -14,7 +14,7 @@ public class MSolver {
 
 	// Any step between two nighboring shearing forces counts as an discontiunuity
 	private static final int DISCONTIUNUITY_THRESHOLD = 1;
-	
+
 	/**
 	 * Calculates the bending moments along the beam.
 	 * 
@@ -23,14 +23,14 @@ public class MSolver {
 	 * 
 	 * @param qTable
 	 * @param beam
-	 * @param unit The unit (N, kN.....).
-	 * @return A table of {@link StressResultant}- objects containing the
-	 *         bending moments along the beam => M(x).
+	 * @param unit   The unit (N, kN.....).
+	 * @return A table of {@link StressResultant}- objects containing the bending
+	 *         moments along the beam => M(x).
 	 */
-	public static StressResultantTable solve(StressResultantTable qTable, Beam beam,String unit) {
+	public static StressResultantTable solve(StressResultantTable qTable, Beam beam, String unit) {
 
-		StressResultantTable mTable = new StressResultantTable(beam, qTable.getSectionLength_m(),unit);
-	
+		StressResultantTable mTable = new StressResultantTable(beam, qTable.getSectionLength_m(), unit);
+
 		double m_Nm = 0;
 		double m1_Nm = 0;
 		double q_N, q1_N;
@@ -39,9 +39,9 @@ public class MSolver {
 		double x = 0;
 
 		for (int n = 0; n <= qTable.getLength() - 2; n++) {
-       
+
 			q_N = qTable.getShearingForceAtIndex(n).getShearingForce();
-		
+
 			q1_N = qTable.getShearingForceAtIndex(n + 1).getShearingForce();
 			double deltaQ_N = q1_N - q_N;
 
@@ -51,28 +51,25 @@ public class MSolver {
 				m_Nm = q_N * x;
 				m1_Nm = q1_N * (x + sectionLength_m);
 				deltaM_Nm = m1_Nm - m_Nm;
-				
-	
-	} else {
-				
+
+			} else {
+
 			}
-			
+
 			m_Nm = mTable.getShearingForceAtIndex(n).getShearingForce();
 			mTable.getShearingForceAtIndex(n + 1).setShearingForce(m_Nm + deltaM_Nm);
-		
+
 			// Check for disconuinity in Q(x) because
 			// M(x) must also be a diconuinity
 			if (qTable.getShearingForceAtIndex(n).isDiscontiunuity()) {
 				mTable.getShearingForceAtIndex(n).setDiscontiunuity(true);
-				mTable.getShearingForceAtIndex(n).setShearingForceDeltaBy(m_Nm+deltaM_Nm);
-			}	
-			
+				mTable.getShearingForceAtIndex(n).setShearingForceDeltaBy(m_Nm + deltaM_Nm);
+			}
+
 			// Check for zero points in Q(x). Zero points are local
 			// maxima in M(x).
-			if (qTable.getShearingForceAtIndex(n).isZeroPoint()) 
+			if (qTable.getShearingForceAtIndex(n).isZeroPoint())
 				mTable.getShearingForceAtIndex(n).setMaxima(true);
-			
-	
 
 			// Next
 			x = x + sectionLength_m;
