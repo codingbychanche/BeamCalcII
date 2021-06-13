@@ -2,6 +2,7 @@ package org.berthold.beamCalc;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -66,7 +67,7 @@ public class StressResultantDraw {
 		rightSupportX=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(1).getDistanceFromLeftEndOfBeam_m();
 		rightSupportName=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(1).getNameOfSupport();
 		
-		// Constants efining the gfx- window
+		// Constants defining the gfx- window
 		y0_px = height_px / 2;
 		yMax = stressResultantsTable.getAbsMax();
 		yMin =  stressResultantsTable.getAbsMin();
@@ -80,10 +81,18 @@ public class StressResultantDraw {
 
 			// Grab the graphics object off the image
 			Graphics2D graphics = img.createGraphics();
+			graphics=assignRenderingHints(graphics);
 			
-			graphics.setBackground(Color.WHITE);
-
-			Stroke stroke = new BasicStroke(.1f);
+			// Draw background
+			Color c1=new Color (255,255,255);
+			Color c2=new Color (200,200,200);
+			
+			GradientPaint gradient = new GradientPaint((float) 1, 0, c1, (float) (0), height_px, c2);
+			graphics.setPaint(gradient);
+			graphics.fillRect(0,0, width_px,
+					height_px );
+			
+			Stroke stroke = new BasicStroke(1.5f);
 			graphics.setStroke(stroke);
 			graphics.setColor(Color.BLACK);
 			
@@ -161,5 +170,25 @@ public class StressResultantDraw {
 	 */
 	private double getXT(double x) {
 		return x * ((width_px - 2 * padX_px) / xMax) + padX_px;
+	}
+	
+	//
+	// GFX settings
+	//
+	/**
+	 * Adds rendering hints for the graphics display.
+	 * 
+	 * @param graphics The {@Graphics2D}- object to which the rendering settings are
+	 *                 to be added.
+	 * @return The {@Graphics2D}- object containing the new rendering settings.
+	 */
+	private Graphics2D assignRenderingHints(Graphics2D graphics) {
+		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+		graphics.setRenderingHints(rh);
+
+		return graphics;
 	}
 }

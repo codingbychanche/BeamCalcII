@@ -2,6 +2,11 @@ Beam Calc
 =========
 Calculates the supporting forces of a simply supported beam.
 
+Beam and acting loads
+---------------------
+![](Shot_0.png)
+
+
 Sample output
 -------------
 ![](Shot_2.jpg)
