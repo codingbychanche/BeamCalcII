@@ -14,11 +14,19 @@ Sample output
 ![](LeadingSigns.png)
 
 
-Graphical solution:
+Stress resultants:
 
 ![](Q.png)
 
+Shearing forces.
+
 ![](M.png)
+
+Bending moments.
+
+![](N.png)
+
+Normal forces.
 
 
 Screenshot of "Beam Calc". An Android app using this library. The screenshot shows the problem. The solution is shown in the following shell- output:
