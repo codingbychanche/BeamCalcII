@@ -126,8 +126,7 @@ public class StressResultantTable {
 	 */
 	public void addDistributedLoad(Load dl_Nm) {
 
-		double dq_perSectionLength = dl_Nm.getForce_N() / (1 / this.sectionLength_m);
-
+		double dq_perSectionLength = dl_Nm.getForce_N() / (1/this.sectionLength_m);
 		double xStartOfLoad = dl_Nm.getDistanceFromLeftEndOfBeam_m();
 		double xEndOfLoad = dl_Nm.getDistanceFromLeftEndOfBeam_m() + dl_Nm.getLengthOfLineLoad_m();
 
@@ -136,18 +135,21 @@ public class StressResultantTable {
 			// Set disconiuity at start of load
 			if (xStartOfLoad>=r.getX_m() && xStartOfLoad<=r.getX_m()+this.sectionLength_m) {
 				r.setDiscontiunuity(true);
-				r.setShearingForceDeltaBy(dq_perSectionLength);
+				r.addValue(dq_perSectionLength);
+				System.out.println("START Disc!"+r.getX_m());
 			}
 
 			// Add load 
 			if (r.getX_m() >= xStartOfLoad && r.getX_m() <= xEndOfLoad) {
 				r.addValue(dq_perSectionLength);
+				System.out.println("q="+dq_perSectionLength+" x="+r.getX_m());
 			}
 			
 			// Set disconiuity at end of load
 			if (xEndOfLoad>=r.getX_m() && xEndOfLoad<=r.getX_m()+this.sectionLength_m) {
 				r.setDiscontiunuity(true);
 				r.setShearingForceDeltaBy(dq_perSectionLength);
+				System.out.println("END Disc!"+r.getX_m()+r.getX_m());
 			}
 
 		}

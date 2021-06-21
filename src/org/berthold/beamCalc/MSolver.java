@@ -72,7 +72,8 @@ public class MSolver {
 				mTable.getShearingForceAtIndex(n).setMaxima(true);
 
 			// Next
-			x = x + sectionLength_m;
+			x = x + sectionLength_m/1000;
+	
 		}
 		return mTable;
 	}
