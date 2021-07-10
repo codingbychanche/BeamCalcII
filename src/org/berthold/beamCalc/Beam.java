@@ -1,10 +1,10 @@
 package org.berthold.beamCalc;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
-/** 
+/**
  * A beam
  * 
  * @author Berthold
@@ -28,6 +28,11 @@ public class Beam {
 		loads = new ArrayList<Load>();
 	}
 
+	/**
+	 * Adds a load which either can be a point load or a distributed load.
+	 * 
+	 * @param load The {@link Load}- object.
+	 */
 	public void addLoad(Load load) {
 		loads.add(load);
 	}
@@ -37,6 +42,14 @@ public class Beam {
 		numberOfSupports++;
 	}
 
+	/**
+	 * Checks if any given length is bigger as the length of this beam object.
+	 * 
+	 * @param distanceFromLeftEndOfBeam_m
+	 * @return true if the given length is equal or smaller than the length of
+	 *         this beam object. false if otherwise.
+	 * 
+	 */
 	public boolean isInsideOfBeamLength(double distanceFromLeftEndOfBeam_m) {
 		if (distanceFromLeftEndOfBeam_m >= 0 && distanceFromLeftEndOfBeam_m <= lengthOfBeam_m)
 			return true;
@@ -93,11 +106,11 @@ public class Beam {
 		}
 		return numberOfLineLoads;
 	}
-	
-	public List <Load> getLoads(){
+
+	public List<Load> getLoads() {
 		return loads;
 	}
-	
+
 	/**
 	 * Sort loads descending by distance from left end of beam.
 	 * 
@@ -110,6 +123,7 @@ public class Beam {
 
 	/**
 	 * Sort supports descending by distance from left end of beam.
+	 * 
 	 * @return
 	 */
 	public List<Support> getSupportsSortedByDistanceFromLeftEndOfBeamDesc() {

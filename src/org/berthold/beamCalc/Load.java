@@ -231,10 +231,21 @@ public class Load implements Comparable<Load> {
 		return angleOfLoad_degrees;
 	}
 
+	/**
+	 * Length of an uniformly distributed load.
+	 * 
+	 * @return Length of the load.
+	 */
 	public double getLengthOfLineLoad_m() {
 		return lengthOfLineLoad_m;
 	}
 
+	/**
+	 * Checks wether this load should be included wehn calculating
+	 * the supporting forces or not.
+	 * 
+	 * @return True if this load should be included into the calculation. False if not.
+	 */
 	public boolean getIncludeThisLoadIntoCalculation() {
 		return includeThisLoadIntoCaclulation;
 	}

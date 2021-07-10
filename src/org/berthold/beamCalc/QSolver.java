@@ -15,9 +15,9 @@ public class QSolver {
 	/**
 	 * Calculates the shearing forces along the length of the beam.
 	 * 
-	 * Basis is a a table containing {@link StressResultant}- Objects. The starting
-	 * contition for this table is, that is must contain all supporting forces and
-	 * all acting forces.
+	 * Basis is a a table containing {@link StressResultant}- Objects. The
+	 * starting contition for this table is, that is must contain all supporting
+	 * forces and all acting forces.
 	 * <p>
 	 * Shearing forces are calculated by following this algorithm:
 	 * <p>
@@ -31,20 +31,23 @@ public class QSolver {
 	 * 
 	 * For the time beeing this works only for point loads!
 	 * 
-	 * @param beam An {@link beam}- object from which the shearing forces are
-	 *             calculated.	  
-	 * @param unit The unit (N, kN.....).
+	 * @param beam
+	 *            An {@link beam}- object from which the shearing forces are
+	 *            calculated.
+	 * @param unit
+	 *            The unit (N, kN.....).
 	 * 
-	 * @return A {@link StressResultantTable}- object containing the shearing forces
-	 *         over the length of the beam => Q(x)
+	 * @return A {@link StressResultantTable}- object containing the shearing
+	 *         forces over the length of the beam => Q(x)
 	 * 
 	 */
 	public static StressResultantTable solve(Beam beam, String unit) {
-		final double sectionLength_m = .0001; // Small values lead to more accurate results.
+		double sectionLength_m = .0001; // Small values lead to more accurate
+										// results.
 
 		BeamResult result = BeamSolver.getResults(beam, "2f");
 
-		StressResultantTable qTable = new StressResultantTable(beam, sectionLength_m,unit);
+		StressResultantTable qTable = new StressResultantTable(beam, sectionLength_m, unit);
 
 		// Add supporting forces
 		Load l = new Load("A", result.getResultingForceAtLeftBearing_N(),
@@ -69,11 +72,11 @@ public class QSolver {
 			}
 
 		// Superimpose uniformingly distributed loads
-		List<Load> loads = beam.getLoads();
+		List<Load> loads = beam.getLoadsSortedByDistanceFromLeftSupportDesc();
+	
 		for (Load q : loads) {
-			if (q.getLengthOfLineLoad_m() > 0) {
-				qTable.addDistributedLoad(q);
-			}
+			if (q.getLengthOfLineLoad_m() > 0) 
+			qTable.addDistributedLoad(q);
 		}
 
 		// Calculate shearing forces from existing table and write results back

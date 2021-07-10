@@ -2,7 +2,9 @@ package org.berthold.beamCalc;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.GradientPaint;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -34,6 +36,7 @@ public class StressResultantDraw {
 	
 	// Constants for the GFX- window
 	private final int Y_OFFSET_ANNOTATION=15;
+	private final int PADDING_TOP_PX=80; // A constant enabeling text at the top of the diagram to be seen....
 	
 	/**
 	 * Creates a new image.
@@ -54,21 +57,23 @@ public class StressResultantDraw {
 		this.name=name;
 		this.beam=beam;
 		this.stressResultantsTable=stressResultants;
-		this.height_px = height_px;
-		this.width_px = width_px;
 		this.padX_px = padX_px;
 		this.padY_px = padY_px;
 		this.numberFormat=numberFormat;
-
+		
+		this.height_px = height_px;
+		this.width_px = width_px;
+	
 		// Beam
 		leftSupportX=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(0).getDistanceFromLeftEndOfBeam_m();
 		leftSupportName=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(0).getNameOfSupport();
 		
 		rightSupportX=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(1).getDistanceFromLeftEndOfBeam_m();
 		rightSupportName=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(1).getNameOfSupport();
+
 		
-		// Constants defining the gfx- window
-		y0_px = height_px / 2;
+		// Constants for the gfx- window
+		y0_px = (height_px / 2)+PADDING_TOP_PX;
 		yMax = stressResultantsTable.getAbsMax();
 		yMin =  stressResultantsTable.getAbsMin();
 		xMax =  stressResultantsTable.getAbsMaxX();
@@ -77,27 +82,35 @@ public class StressResultantDraw {
 	public void draw() {
 		try {
 			// Create an in memory Image
-			BufferedImage img = new BufferedImage(width_px,height_px, BufferedImage.TYPE_INT_ARGB);
+			// This is a image used only to determine the width of the image + the width of the
+			// right supports name.... Determine right padding...
+			BufferedImage himg = new BufferedImage(width_px,height_px, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D hg=himg.createGraphics();
+			int paddingRight_px=getWidthOfStringIn_px(leftSupportName,hg);
+			
+			
+			// This is the image used by the renderer
+			BufferedImage img = new BufferedImage(width_px+paddingRight_px,height_px+PADDING_TOP_PX, BufferedImage.TYPE_INT_ARGB);
 
 			// Grab the graphics object off the image
 			Graphics2D graphics = img.createGraphics();
 			graphics=assignRenderingHints(graphics);
 			
 			// Draw background
-			Color c1=new Color (255,255,255);
-			Color c2=new Color (200,200,200);
+			Color c1=new Color (255,255,255); // Gradient start color
+			Color c2=new Color (190,190,190); // Gradient end color
 			
-			GradientPaint gradient = new GradientPaint((float) 1, 0, c1, (float) (0), height_px, c2);
+			GradientPaint gradient = new GradientPaint((float) 1, 0, c1, (float) (0), height_px+PADDING_TOP_PX, c2);
 			graphics.setPaint(gradient);
-			graphics.fillRect(0,0, width_px,
-					height_px );
+			graphics.fillRect(0,0, width_px+paddingRight_px,
+					height_px+PADDING_TOP_PX );
 			
 			Stroke stroke = new BasicStroke(1.5f);
 			graphics.setStroke(stroke);
 			graphics.setColor(Color.BLACK);
 			
 			// Datum
-			graphics.drawLine(padX_px,y0_px,width_px-padX_px,y0_px);
+			graphics.drawLine(padX_px,y0_px+PADDING_TOP_PX,width_px-padX_px,y0_px+PADDING_TOP_PX);
 			
 			// Supports
 			String dimFormated;
@@ -113,13 +126,13 @@ public class StressResultantDraw {
 			
 			// Draw stress resultants.
 			for (StressResultant r: stressResultantsTable.sfValues) {
-				// Stress resultant
-				graphics.setColor(Color.RED);
 				
 				// Transform
 				double y=r.getShearingForce();
 				double x=r.getX_m();
 				
+				// The graph
+				graphics.setColor(Color.RED);
 				graphics.drawLine((int)getXT(x),(int) getYT(y),(int) getXT(x),(int) getYT(y));
 				
 				String shFormated;
@@ -127,7 +140,8 @@ public class StressResultantDraw {
 					graphics.setColor(Color.GRAY);
 					graphics.drawLine((int)getXT(x),padY_px,(int)getXT(x),height_px-padY_px);
 					
-					graphics.setColor(Color.RED);
+					Color c=new Color (100,0,0);
+					graphics.setColor(c);
 					
 					shFormated=String.format(numberFormat,r.getShearingForce());					
 					graphics.drawString(shFormated+" "+r.getUnit(),(int)getXT(x),(int)getYT(y));
@@ -137,6 +151,8 @@ public class StressResultantDraw {
 					graphics.setColor(Color.BLUE);
 					graphics.drawLine((int)getXT(x),padY_px,(int)getXT(x),height_px-padY_px);
 				}
+				
+				
 			}
 			
 			// Save to file.
@@ -155,11 +171,11 @@ public class StressResultantDraw {
 	private double getYT(double y) {
 
 		if (y > 0)
-			return y0_px - ((y0_px - padY_px) / yMax) * y;
+			return (y0_px - ((y0_px - padY_px) / yMax) * y)+PADDING_TOP_PX;
 		if (y < 0)
-			return y0_px + ((height_px - padY_px - y0_px) / yMin) * y;
+			return (y0_px + ((height_px - padY_px - y0_px) / yMin) * y)+PADDING_TOP_PX;
 
-		return (double) y0_px;
+		return (double) y0_px+PADDING_TOP_PX;
 	}
 
 	/**
@@ -170,6 +186,18 @@ public class StressResultantDraw {
 	 */
 	private double getXT(double x) {
 		return x * ((width_px - 2 * padX_px) / xMax) + padX_px;
+	}
+	
+	/**
+	 * Display width of a string in pixels.
+	 * 
+	 * @param string
+	 * @param g Associated {@ling Graphics} object.
+	 * @return	Width of string in pixels.
+	 */
+	private int getWidthOfStringIn_px(String string,Graphics g) {
+		FontMetrics f=g.getFontMetrics();
+		return f.stringWidth(string);
 	}
 	
 	//

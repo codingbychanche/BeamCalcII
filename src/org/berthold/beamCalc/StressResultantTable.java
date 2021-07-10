@@ -110,7 +110,7 @@ public class StressResultantTable {
 
 				q.setDiscontiunuity(true);
 				
-				q.setShearingForceDeltaBy(force_N);
+				//q.setShearingForceDeltaBy(force_N);
 
 				q.setShearingForce(force_N);
 				q.setX_m(x_m);
@@ -151,7 +151,6 @@ public class StressResultantTable {
 				r.setShearingForceDeltaBy(dq_perSectionLength);
 				System.out.println("END Disc!"+r.getX_m()+r.getX_m());
 			}
-
 		}
 
 		// Debug....

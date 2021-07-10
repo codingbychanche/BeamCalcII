@@ -35,7 +35,7 @@ public class MSolver {
 		double m1_Nm = 0;
 		double q_N, q1_N;
 		double deltaM_Nm = 0;
-		double sectionLength_m = qTable.getSectionLength_m();
+		double sectionLength_m = mTable.getSectionLength_m();
 		double x = 0;
 
 		for (int n = 0; n <= qTable.getLength() - 2; n++) {
@@ -51,7 +51,6 @@ public class MSolver {
 				m_Nm = q_N * x;
 				m1_Nm = q1_N * (x + sectionLength_m);
 				deltaM_Nm = m1_Nm - m_Nm;
-
 			} else {
 
 			}
@@ -72,8 +71,7 @@ public class MSolver {
 				mTable.getShearingForceAtIndex(n).setMaxima(true);
 
 			// Next
-			x = x + sectionLength_m/1000;
-	
+			x = x + sectionLength_m/(1/sectionLength_m);
 		}
 		return mTable;
 	}
