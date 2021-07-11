@@ -156,7 +156,8 @@ public class StressResultantDraw {
 				if (r.isDiscontiunuity() || r.isZeroPoint()) {
 					graphics.setColor(Color.GRAY);
 					graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x), height_px - padY_px + PADDING_TOP_PX);
-
+					//graphics.drawString(r.getName()+"-" , (int) getXT(x), PADDING_TOP_PX);
+					
 					Color c = new Color(100, 0, 0);
 					graphics.setColor(c);
 

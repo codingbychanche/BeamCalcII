@@ -108,8 +108,8 @@ public class StressResultantTable {
 			if (x_m >= i && x_m < i + sectionLength_m) {
 				StressResultant q = this.sfValues.get(n);
 
+				q.setName(l.getName());
 				q.setDiscontiunuity(true);
-				
 				q.setShearingForce(force_N);
 				q.setX_m(x_m);
 			}
@@ -146,10 +146,6 @@ public class StressResultantTable {
 				r.setShearingForceDeltaBy(dq_perSectionLength);
 			}
 		}
-
-		// Debug....
-		//for (StressResultant v : this.sfValues)
-		//System.out.println("x=" + v.getX_m() + " Q=" + v.getShearingForce()+"dis="+v.isDiscontiunuity());
 	}
 
 	/**

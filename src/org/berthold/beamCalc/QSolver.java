@@ -67,13 +67,12 @@ public class QSolver {
 			if (load.getLengthOfLineLoad_m() == 0) {
 				angleOfLoadInRadians = load.getAngleOfLoad_degrees() * Math.PI / 180;
 				verticalLoad = load.getForce_N() * Math.cos(angleOfLoadInRadians);
-				Load v = new Load("Hn", verticalLoad, load.getDistanceFromLeftEndOfBeam_m(), 0, 0);
+				Load v = new Load(load.getName(), verticalLoad, load.getDistanceFromLeftEndOfBeam_m(), 0, 0);
 				qTable.addForce(v);
 			}
 
 		// Superimpose uniformingly distributed loads
 		List<Load> loads = beam.getLoadsSortedByDistanceFromLeftSupportDesc();
-	
 		for (Load q : loads) {
 			if (q.getLengthOfLineLoad_m() > 0) 
 			qTable.addDistributedLoad(q);

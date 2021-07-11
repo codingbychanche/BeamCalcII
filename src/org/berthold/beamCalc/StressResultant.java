@@ -11,6 +11,7 @@ public class StressResultant {
 	private double x_m;
 	private double stressResultantValue;
 	private String unit;
+	private String name;
 
 	// Discontinuiuty=> A single load acting or start/ end of
 	// a distributed load.
@@ -160,6 +161,24 @@ public class StressResultant {
 
 	public void setMaxima(boolean isMaxima) {
 		this.isMaxima = isMaxima;
+	}
+
+	/**
+	 * Name of the asociated load.
+	 * 
+	 * @return Name.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the name of this stress resultant.
+	 * 
+	 * @param name Name of the associated {@link Load}- object.
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

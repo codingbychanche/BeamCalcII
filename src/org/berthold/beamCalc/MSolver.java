@@ -15,7 +15,7 @@ import java.util.List;
 public class MSolver {
 
 	// Any step between two nighboring shearing forces counts as an discontiunuity
-	private static final double DISCONTIUNUITY_THRESHOLD = 0.0001;
+	private static final double DISCONTIUNUITY_THRESHOLD = 0.001;
 
 	/**
 	 * Calculates the bending moments along the beam.
