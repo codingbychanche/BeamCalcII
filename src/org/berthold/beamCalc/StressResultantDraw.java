@@ -24,6 +24,7 @@ import javax.imageio.ImageIO;
 public class StressResultantDraw {
 
 	private String name;
+	private String rightSupportDistanceFromLeftEnd;
 	private Beam beam;
 	private StressResultantTable stressResultantsTable;
 	private int height_px, width_px, padX_px, padY_px;
@@ -36,7 +37,8 @@ public class StressResultantDraw {
 	
 	// Constants for the GFX- window
 	private final int Y_OFFSET_ANNOTATION=15;
-	private final int PADDING_TOP_PX=80; // A constant enabeling text at the top of the diagram to be seen....
+	private final int PADDING_TOP_PX=20; // A constant enabeling text at the top of the diagram to be seen....
+	private final int PADDING_BOTTOM_PX=20;
 	
 	/**
 	 * Creates a new image.
@@ -70,7 +72,7 @@ public class StressResultantDraw {
 		
 		rightSupportX=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(1).getDistanceFromLeftEndOfBeam_m();
 		rightSupportName=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(1).getNameOfSupport();
-
+		rightSupportDistanceFromLeftEnd=beam.getSupportsSortedByDistanceFromLeftEndOfBeamDesc().get(0)+" m";
 		
 		// Constants for the gfx- window
 		y0_px = (height_px / 2)+PADDING_TOP_PX;
@@ -83,14 +85,14 @@ public class StressResultantDraw {
 		try {
 			// Create an in memory Image
 			// This is a image used only to determine the width of the image + the width of the
-			// right supports name.... Determine right padding...
+			// right supports name and the dimensions.... Determines right padding...
 			BufferedImage himg = new BufferedImage(width_px,height_px, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D hg=himg.createGraphics();
-			int paddingRight_px=getWidthOfStringIn_px(leftSupportName,hg);
+			int paddingRight_px=getWidthOfStringIn_px(leftSupportName+" "+rightSupportDistanceFromLeftEnd,hg);
 			
 			
 			// This is the image used by the renderer
-			BufferedImage img = new BufferedImage(width_px+paddingRight_px,height_px+PADDING_TOP_PX, BufferedImage.TYPE_INT_ARGB);
+			BufferedImage img = new BufferedImage(width_px+paddingRight_px,height_px+PADDING_TOP_PX+PADDING_BOTTOM_PX, BufferedImage.TYPE_INT_ARGB);
 
 			// Grab the graphics object off the image
 			Graphics2D graphics = img.createGraphics();
@@ -100,10 +102,9 @@ public class StressResultantDraw {
 			Color c1=new Color (255,255,255); // Gradient start color
 			Color c2=new Color (190,190,190); // Gradient end color
 			
-			GradientPaint gradient = new GradientPaint((float) 1, 0, c1, (float) (0), height_px+PADDING_TOP_PX, c2);
+			GradientPaint gradient = new GradientPaint((float) 1, 0, c1, (float) (0), height_px+PADDING_TOP_PX+PADDING_BOTTOM_PX, c2);
 			graphics.setPaint(gradient);
-			graphics.fillRect(0,0, width_px+paddingRight_px,
-					height_px+PADDING_TOP_PX );
+			graphics.fillRect(0,0, width_px+paddingRight_px,height_px+PADDING_TOP_PX+PADDING_BOTTOM_PX );
 			
 			Stroke stroke = new BasicStroke(1.5f);
 			graphics.setStroke(stroke);
@@ -115,7 +116,7 @@ public class StressResultantDraw {
 			// Supports
 			String dimFormated;
 			int xTLeft=(int)getXT(leftSupportX);
-			graphics.drawLine(xTLeft,(int)padY_px,xTLeft,(int)height_px-padY_px);
+			graphics.drawLine(xTLeft,(int)padY_px,xTLeft,(int)height_px-padY_px+PADDING_TOP_PX);
 			dimFormated=String.format(numberFormat,leftSupportX);
 			graphics.drawString(leftSupportName+" "+dimFormated+" m",xTLeft,(int)getYT(0)+Y_OFFSET_ANNOTATION);
 			
@@ -138,7 +139,7 @@ public class StressResultantDraw {
 				String shFormated;
 				if (r.isDiscontiunuity()) {
 					graphics.setColor(Color.GRAY);
-					graphics.drawLine((int)getXT(x),padY_px,(int)getXT(x),height_px-padY_px);
+					graphics.drawLine((int)getXT(x),padY_px,(int)getXT(x),height_px-padY_px+PADDING_TOP_PX);
 					
 					Color c=new Color (100,0,0);
 					graphics.setColor(c);
@@ -149,10 +150,8 @@ public class StressResultantDraw {
 				
 				if(r.isMaxima()) {
 					graphics.setColor(Color.BLUE);
-					graphics.drawLine((int)getXT(x),padY_px,(int)getXT(x),height_px-padY_px);
+					graphics.drawLine((int)getXT(x),padY_px,(int)getXT(x),height_px-padY_px+PADDING_TOP_PX);
 				}
-				
-				
 			}
 			
 			// Save to file.

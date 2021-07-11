@@ -26,8 +26,8 @@ public class MainBeamCalculator {
 		// NAME/ Force/ Distance/ Angle /Length
 		//myBeam.addLoad(new Load("F1", -2.0, 1, 0, 0));
 		//myBeam.addLoad(new Load("F2", -3, 3,0, 0));
-		myBeam.addLoad(new Load("F3", -14, 2,0, 0));
-		myBeam.addLoad(new Load("q1", -5, 1, 0,2));
+		//myBeam.addLoad(new Load("F3", -14, 1,0, 0));
+		myBeam.addLoad(new Load("q1", 5, 0, 0,4));
 		
 		
 		//myBeam.addLoad(new Load("q2", 2, 0, 0, 4));
@@ -115,15 +115,9 @@ public class MainBeamCalculator {
 				if (v.isZeroPoint())
 					System.out.println("x=" + v.getX_m() + " m   M=" + v.getShearingForce()+" "+v.getUnit());
 			}
-			
-			
-			
+		
 			StressResultantDraw m=new StressResultantDraw("M",myBeam,mTable,800,1200,10,10,"%.2f");
 			m.draw();
-			
-			//for (StressResultant r:mTable.getShearingForceTable()) {
-			//	System.out.println("x="+r.getX_m()+"    M="+r.getShearingForce());
-			//}
 	
 			//
 			// N
