@@ -38,7 +38,7 @@ public class StressResultant {
 	}
 
 	/**
-	 * Position of this shearing force.
+	 * Position of this stress resultant.
 	 * 
 	 * @return Position relative to the left end of the beam.
 	 */
@@ -94,7 +94,7 @@ public class StressResultant {
 	/**
 	 * The magnitute of this stress resultant.
 	 * 
-	 * @return Shearing force magnitute.
+	 * @return stress resultant magnitute.
 	 */
 	public double getShearingForceValue() {
 		return stressResultantValue;
@@ -104,25 +104,25 @@ public class StressResultant {
 	 * 
 	 * Repleaces the current value of this stress resultant with the new one.
 	 * 
-	 * @param shearingForceValue New value for this shearing force.
+	 * @param shearingForceValue New value for this stress resultant.
 	 */
 	public void setShearingForceValue(double shearingForceValue) {
 		this.stressResultantValue = shearingForceValue;
 	}
 
 	/**
-	 * Marks if this shearing force acts at a point of disconuinity. This Value is
+	 * Marks that this stress resultant acts at a point of disconuinity. This Value is
 	 * set when a {@link StressResultantTable} is initalized either by the
 	 * {@link Qsolver}- or the {@link MSolver} class.
 	 * 
-	 * @return True if/ fals if no disconuinity.
+	 * @return True if/ false if no disconuinity.
 	 */
 	public boolean isDiscontiunuity() {
 		return isDiscontiunuity;
 	}
 
 	/**
-	 * Marks if this shearing force acts at a point of disconuinity. This Value is
+	 * Marks that this stress resultant acts at a point of disconuinity. This Value is
 	 * set when a {@link StressResultantTable} is initalized either by the
 	 * {@link Qsolver}- or the {@link MSolver} class.
 	 */

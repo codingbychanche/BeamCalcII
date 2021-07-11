@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class StressResultantTable {
 
-	private static final int DISCONTIUNUITY_THRESHOLD = 1;
+	private static final double DISCONTIUNUITY_THRESHOLD = .01;
 
 	public List<StressResultant> sfValues = new ArrayList<StressResultant>(); // Create getter/ setter :-(
 	
@@ -28,8 +28,8 @@ public class StressResultantTable {
 	/**
 	 * A new Stress resultant table.
 	 * 
-	 * Creates a new table for the passed {@link Beam}-object and adds the
-	 * supporting forces.
+	 * Creates a new table for the passed {@link Beam}-object, adds the
+	 * supporting forces and all forces acting.
 	 * 
 	 * @param beam            A {@link Beam}- object from which the table is build.
 	 * @param sectionLength_m Sections between the forces acting.
@@ -110,8 +110,6 @@ public class StressResultantTable {
 
 				q.setDiscontiunuity(true);
 				
-				//q.setShearingForceDeltaBy(force_N);
-
 				q.setShearingForce(force_N);
 				q.setX_m(x_m);
 			}
@@ -136,20 +134,16 @@ public class StressResultantTable {
 			if (xStartOfLoad>=r.getX_m() && xStartOfLoad<=r.getX_m()+this.sectionLength_m) {
 				r.setDiscontiunuity(true);
 				r.addValue(dq_perSectionLength);
-				System.out.println("START Disc!"+r.getX_m());
 			}
 
 			// Add load 
-			if (r.getX_m() >= xStartOfLoad && r.getX_m() <= xEndOfLoad) {
+			if (r.getX_m() >= xStartOfLoad && r.getX_m() <= xEndOfLoad) 
 				r.addValue(dq_perSectionLength);
-				System.out.println("q="+dq_perSectionLength+" x="+r.getX_m());
-			}
 			
 			// Set disconiuity at end of load
 			if (xEndOfLoad>=r.getX_m() && xEndOfLoad<=r.getX_m()+this.sectionLength_m) {
 				r.setDiscontiunuity(true);
 				r.setShearingForceDeltaBy(dq_perSectionLength);
-				System.out.println("END Disc!"+r.getX_m()+r.getX_m());
 			}
 		}
 

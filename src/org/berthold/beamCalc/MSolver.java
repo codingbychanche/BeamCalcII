@@ -7,13 +7,15 @@ import java.util.List;
  * Calculates the bending moments along the length of a {@link Beam}- object.
  * Q(x) => M(x)
  * 
+ * FOR THE TIME BEEING THIS WORKS NOT FOR UNEVENLY DISTRIBUTED LOADS
+ * 
  * @author Berthold
  *
  */
 public class MSolver {
 
 	// Any step between two nighboring shearing forces counts as an discontiunuity
-	private static final int DISCONTIUNUITY_THRESHOLD = 1;
+	private static final double DISCONTIUNUITY_THRESHOLD = 0.0001;
 
 	/**
 	 * Calculates the bending moments along the beam.
@@ -58,9 +60,9 @@ public class MSolver {
 			m_Nm = mTable.getShearingForceAtIndex(n).getShearingForce();
 			mTable.getShearingForceAtIndex(n + 1).setShearingForce(m_Nm + deltaM_Nm);
 
-			// Check for disconuinity in Q(x) because
-			// M(x) must also be a diconuinity
-			if (qTable.getShearingForceAtIndex(n).isDiscontiunuity()) {
+			// Check for disconuinity or zero pojnt in Q(x) because
+			// M(x) must also be a diconuinity or a local maxima/ minima
+			if (qTable.getShearingForceAtIndex(n).isDiscontiunuity() || qTable.getShearingForceAtIndex(n).isZeroPoint()) {
 				mTable.getShearingForceAtIndex(n).setDiscontiunuity(true);
 				mTable.getShearingForceAtIndex(n).setShearingForceDeltaBy(m_Nm + deltaM_Nm);
 			}

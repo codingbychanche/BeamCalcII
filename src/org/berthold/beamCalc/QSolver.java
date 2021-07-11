@@ -29,7 +29,7 @@ public class QSolver {
 	 * beam.
 	 * <p>
 	 * 
-	 * For the time beeing this works only for point loads!
+	 * FOR THE TIME BEEING THIS WORKS NOT FOR UNEVENLY DISTRIBUTED LOADS
 	 * 
 	 * @param beam
 	 *            An {@link beam}- object from which the shearing forces are
@@ -42,7 +42,7 @@ public class QSolver {
 	 * 
 	 */
 	public static StressResultantTable solve(Beam beam, String unit) {
-		double sectionLength_m = .0001; // Small values lead to more accurate
+		double sectionLength_m = .00001; // Small values lead to more accurate
 										// results.
 
 		BeamResult result = BeamSolver.getResults(beam, "2f");
