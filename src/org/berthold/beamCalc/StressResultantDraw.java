@@ -101,10 +101,11 @@ public class StressResultantDraw {
 
 			BufferedImage himg = new BufferedImage(width_px, height_px, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D hg = himg.createGraphics();
-			paddingRight_px = getWidthOfStringIn_px(leftSupportName + " " + rightSupportDistanceFromLeftEnd, hg);
+
+			paddingRight_px = getWidthOfStringIn_px(rightSupportName + " " +rightSupportX+"m", hg);
 
 			// This is the image used by the renderer
-			BufferedImage img = new BufferedImage(width_px + paddingRight_px,
+			BufferedImage img = new BufferedImage(width_px + paddingRight_px+padX_px,
 					height_px + PADDING_TOP_PX + PADDING_BOTTOM_PX, BufferedImage.TYPE_INT_ARGB);
 
 			// Grab the graphics object off the image
@@ -153,31 +154,33 @@ public class StressResultantDraw {
 				graphics.drawLine((int) getXT(x), (int) getYT(y), (int) getXT(x), (int) getYT(y));
 
 				String shFormated;
-				if (r.isDiscontiunuity() || r.isZeroPoint()) {
+				if (r.isDiscontiunuity() ) {
 					graphics.setColor(Color.GRAY);
 					graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x), height_px - padY_px + PADDING_TOP_PX);
-					//graphics.drawString(r.getName()+"-" , (int) getXT(x), PADDING_TOP_PX);
-					
+
 					Color c = new Color(100, 0, 0);
 					graphics.setColor(c);
 
-					// No need to show value for zero point :-)
-					if (!r.isZeroPoint()) {
-						shFormated = String.format(numberFormat, r.getShearingForce());
-						graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
-					}
+					shFormated = String.format(numberFormat, r.getShearingForce());
+					graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
+
 				}
 
 				if (r.isMaxima()) {
 					graphics.setColor(Color.BLUE);
 					graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x), height_px - padY_px + PADDING_TOP_PX);
+
+					shFormated = String.format(numberFormat, r.getShearingForce());
+					graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
 				}
 			}
 
 			// Save to file.
-			File outputfile = new File(name + ".png");
+			File outputfile = new File(this.name + ".png");
 			ImageIO.write(img, "png", outputfile);
 		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("IO- Error " + e.toString());
 		}
 	}
 

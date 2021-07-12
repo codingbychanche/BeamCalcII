@@ -19,8 +19,11 @@ public class StressResultantTable {
 
 	private static final double DISCONTIUNUITY_THRESHOLD = .01;
 
-	public List<StressResultant> sfValues = new ArrayList<StressResultant>(); // Create getter/ setter :-(
-	
+	public List<StressResultant> sfValues = new ArrayList<StressResultant>(); // Create
+																				// getter/
+																				// setter
+																				// :-(
+
 	private double sectionLength_m;
 	private Beam beam;
 	private String unit;
@@ -31,17 +34,19 @@ public class StressResultantTable {
 	 * Creates a new table for the passed {@link Beam}-object, adds the
 	 * supporting forces and all forces acting.
 	 * 
-	 * @param beam            A {@link Beam}- object from which the table is build.
-	 * @param sectionLength_m Sections between the forces acting.
+	 * @param beam
+	 *            A {@link Beam}- object from which the table is build.
+	 * @param sectionLength_m
+	 *            Sections between the forces acting.
 	 */
 	public StressResultantTable(Beam beam, double sectionLength_m, String unit) {
 		this.beam = beam;
 		this.sectionLength_m = sectionLength_m;
-		this.unit=unit;
+		this.unit = unit;
 
 		// Create empty list with acting forces and add supporting forces
 		for (double x_m = 0; x_m <= (beam.getLength()); x_m = x_m + sectionLength_m) {
-			StressResultant q = new StressResultant(x_m, 0,unit);
+			StressResultant q = new StressResultant(x_m, 0, unit);
 			sfValues.add(q);
 		}
 	}
@@ -58,8 +63,8 @@ public class StressResultantTable {
 	/**
 	 * Section length.
 	 * 
-	 * @return The length between each section the beam is divided into (the space
-	 *         between the resultant forces).
+	 * @return The length between each section the beam is divided into (the
+	 *         space between the resultant forces).
 	 */
 	public double getSectionLength_m() {
 		return sectionLength_m;
@@ -68,10 +73,10 @@ public class StressResultantTable {
 	/**
 	 * Stress resultant at a specified index in the table.
 	 * 
-	 * This method is used by the {@link QSolver}- and {@link MSolver} the class.
-	 * When adding a shearing force use the {@link addForce()} method which
-	 * calculates the index in the table depending from the section length and the
-	 * position of the force relative the the left end of the beam.
+	 * This method is used by the {@link QSolver}- and {@link MSolver} the
+	 * class. When adding a shearing force use the {@link addForce()} method
+	 * which calculates the index in the table depending from the section length
+	 * and the position of the force relative the the left end of the beam.
 	 * 
 	 * @param index
 	 * @return Shearing force.
@@ -83,10 +88,12 @@ public class StressResultantTable {
 	/**
 	 * Resultant force at a specified index in the table.
 	 * 
-	 * This method is used by the {@link QSolver}- and the {@link MSolver} class.
+	 * This method is used by the {@link QSolver}- and the {@link MSolver}
+	 * class.
 	 * 
 	 * @param index
-	 * @param shearingForceValue The shearing force.
+	 * @param shearingForceValue
+	 *            The shearing force.
 	 */
 	public void setAtIndex(int index, StressResultant shearingForceValue) {
 		sfValues.set(index, shearingForceValue);
@@ -95,7 +102,8 @@ public class StressResultantTable {
 	/**
 	 * Adds a point load to this table.
 	 * 
-	 * @param l The {@link Load}- object representing the load.
+	 * @param l
+	 *            The {@link Load}- object representing the load.
 	 */
 	public void addForce(Load l) {
 
@@ -120,28 +128,29 @@ public class StressResultantTable {
 	/**
 	 * Superimposes a uniformly distributed load.
 	 * 
-	 * @param dl_Nm Load.
+	 * @param dl_Nm
+	 *            Load.
 	 */
 	public void addDistributedLoad(Load dl_Nm) {
 
-		double dq_perSectionLength = dl_Nm.getForce_N() / (1/this.sectionLength_m);
+		double dq_perSectionLength = dl_Nm.getForce_N() / (1 / this.sectionLength_m);
 		double xStartOfLoad = dl_Nm.getDistanceFromLeftEndOfBeam_m();
 		double xEndOfLoad = dl_Nm.getDistanceFromLeftEndOfBeam_m() + dl_Nm.getLengthOfLineLoad_m();
 
 		for (StressResultant r : this.sfValues) {
 
 			// Set disconiuity at start of load
-			if (xStartOfLoad>=r.getX_m() && xStartOfLoad<=r.getX_m()+this.sectionLength_m) {
+			if (xStartOfLoad >= r.getX_m() && xStartOfLoad <= r.getX_m() + this.sectionLength_m) {
 				r.setDiscontiunuity(true);
 				r.addValue(dq_perSectionLength);
 			}
 
-			// Add load 
-			if (r.getX_m() >= xStartOfLoad && r.getX_m() <= xEndOfLoad) 
+			// Add load
+			if (r.getX_m() >= xStartOfLoad && r.getX_m() <= xEndOfLoad)
 				r.addValue(dq_perSectionLength);
-			
+
 			// Set disconiuity at end of load
-			if (xEndOfLoad>=r.getX_m() && xEndOfLoad<=r.getX_m()+this.sectionLength_m) {
+			if (xEndOfLoad >= r.getX_m() && xEndOfLoad <= r.getX_m() + this.sectionLength_m) {
 				r.setDiscontiunuity(true);
 				r.setShearingForceDeltaBy(dq_perSectionLength);
 			}
@@ -156,50 +165,82 @@ public class StressResultantTable {
 	public List<StressResultant> getShearingForceTable() {
 		return sfValues;
 	}
-	
+
+	/**
+	 * A list of all maxima of this stress resultant table.
+	 * 
+	 * @return List of {@link StressResultant}- objects containing all maxima
+	 *         found.
+	 */
+	public List<StressResultant> getMaxima() {
+		List<StressResultant> maxima = new ArrayList<>();
+
+		for (StressResultant r : this.sfValues)
+			if (r.isMaxima())
+				maxima.add(r);
+
+		return maxima;
+	}
+
+	/**
+	 * A list of all points of disconuity of this stress resultant table.
+	 * 
+	 * @return List of {@link StressResultant}- objects containing all points of
+	 *         disconuity found.
+	 */
+	public List<StressResultant> getDisconuitys() {
+		List<StressResultant> disconuity = new ArrayList<>();
+
+		for (StressResultant r : this.sfValues)
+			if (r.isDiscontiunuity())
+				disconuity.add(r);
+
+		return disconuity;
+	}
+
 	/**
 	 * Determines the biggest value in this table.
 	 * 
 	 * @return Biggest stress resultant of ths table.
 	 */
-	
+
 	public double getAbsMax() {
-		double max=0;
+		double max = 0;
 		double currentMax;
-		
-		for (int i=0;i<=sfValues.size()-1;i++) {
-			currentMax=sfValues.get(i).getShearingForce();
-			if (currentMax>max)
-				max=currentMax;
+
+		for (int i = 0; i <= sfValues.size() - 1; i++) {
+			currentMax = sfValues.get(i).getShearingForce();
+			if (currentMax > max)
+				max = currentMax;
 		}
 		return max;
 	}
-	
+
 	/**
 	 * Determines the smallest value in this table.
 	 * 
 	 * @return The smallest stress resultant of this table.
 	 */
 	public double getAbsMin() {
-		double min=0;
+		double min = 0;
 		double currentMin;
-		
-		for (int i=0;i<=sfValues.size()-1;i++) {
-			currentMin=sfValues.get(i).getShearingForce();
-			if (currentMin<min)
-				min=currentMin;
+
+		for (int i = 0; i <= sfValues.size() - 1; i++) {
+			currentMin = sfValues.get(i).getShearingForce();
+			if (currentMin < min)
+				min = currentMin;
 		}
 		return min;
 	}
-	
+
 	/**
-	 * Determines the biggest x- value, which is in fact the length
-	 * of the asociated beam.
+	 * Determines the biggest x- value, which is in fact the length of the
+	 * asociated beam.
 	 * 
 	 * @return Beggest x- value.
 	 */
 	public double getAbsMaxX() {
-		int last=sfValues.size()-1;
+		int last = sfValues.size() - 1;
 		return sfValues.get(last).getX_m();
 	}
 }

@@ -20,16 +20,15 @@ public class MainBeamCalculator {
 		// Create a new beam
 		Beam myBeam = new Beam(4);
 		myBeam.addBearing(new Support("A (Left)", 0, Support.ROLLER_SUPPORT));
-		myBeam.addBearing(new Support("B (Right)", 3, Support.PIN_SUPPORT));
+		myBeam.addBearing(new Support("B (Right)", 4, Support.PIN_SUPPORT));
 		
 		// Add load
-		myBeam.addLoad(new Load("q1", -5, 0, 0,4));
-
+		//myBeam.addLoad(new Load("q1", -5, 0, 0,4));
 
 		// NAME/ Force/ Distance/ Angle /Length
 		//myBeam.addLoad(new Load("F1", -2.0, 1, 45, 0));
 		//myBeam.addLoad(new Load("F2", -3, 3,0, 0));
-		//myBeam.addLoad(new Load("F3", -14, 2,0, 0));
+		myBeam.addLoad(new Load("F3", -14, 2,0, 0));
 		myBeam.addLoad(new Load("q1", -5, 0, 0,4));
 		//myBeam.addLoad(new Load("q2", -15, 2, 0,2));
 		
@@ -81,40 +80,42 @@ public class MainBeamCalculator {
 			// Shearing forces Q
 			//
 			System.out.println("");
-			System.out.println("Shearing forces => Q");
+			System.out.println("=== Shearing forces => Q ===");
 			StressResultantTable qTable = QSolver.solve(myBeam,"N");
-
-			for (int n = 0; n <= qTable.getLength() - 1; n++) {
-				StressResultant v = qTable.getShearingForceAtIndex(n);
-
-				if (v.isDiscontiunuity())
-					System.out.println("x=" + v.getX_m() + " m Delta=" + v.getShearingForceDeltaBy() + " "+v.getUnit()+"   Q[N]="+
-							+ v.getShearingForce()+" N");
-			}
 			
-			StressResultantDraw d=new StressResultantDraw("Q",myBeam,qTable,400,800,10,10,"%.2f");
+			List <StressResultant> maxima=new ArrayList<>();
+			maxima=qTable.getMaxima();
+			
+			System.out.println("Local maxi-/  minima");
+			for (StressResultant r:maxima) 
+					System.out.println("x=" + r.getX_m() + " m   M=" + r.getShearingForce()+" "+r.getUnit());
+			
+			List <StressResultant> dis=new ArrayList<>();
+			dis=qTable.getDisconuitys();
+			System.out.println("Points of disconuity in Q");
+			for (StressResultant r:dis) 
+					System.out.println("x=" + r.getX_m() + " m   M=" + r.getShearingForce()+" "+r.getUnit());
+			
+			StressResultantDraw d=new StressResultantDraw("Q",myBeam,qTable,800,1200,10,10,"%.2f");
 			d.draw();
 
 			//
 			// Bending moment M
 			//
 			System.out.println("");
-			System.out.println("Bending moment => M");
+			System.out.println("=== Bending moment => M ===");
 			StressResultantTable mTable = MSolver.solve(qTable, myBeam,"Nm");
 
-			for (int n = 0; n <= mTable.getLength() - 1; n++) {
-				StressResultant v = mTable.getShearingForceAtIndex(n);
-
-				if (v.isDiscontiunuity())
-					System.out.println("x=" + v.getX_m() + " m   M=" + v.getShearingForce()+" "+v.getUnit());
-			}
+			maxima=mTable.getMaxima();
 			
 			System.out.println("Local maxi-/  minima");
-			for (int n = 0; n <= mTable.getLength() - 1; n++) {
-				StressResultant v = mTable.getShearingForceAtIndex(n);
-				if (v.isZeroPoint())
-					System.out.println("x=" + v.getX_m() + " m   M=" + v.getShearingForce()+" "+v.getUnit());
-			}
+			for (StressResultant r:maxima) 
+					System.out.println("x=" + r.getX_m() + " m   M=" + r.getShearingForce()+" "+r.getUnit());
+
+			dis=mTable.getDisconuitys();
+			System.out.println("Points of disconuity in M");
+			for (StressResultant r:dis) 
+					System.out.println("x=" + r.getX_m() + " m   M=" + r.getShearingForce()+" "+r.getUnit());
 		
 			StressResultantDraw m=new StressResultantDraw("M",myBeam,mTable,800,1200,10,10,"%.2f");
 			m.draw();
@@ -123,7 +124,7 @@ public class MainBeamCalculator {
 			// N
 			//
 			System.out.println("");
-			System.out.println("Normal forces => N");
+			System.out.println("=== Normal forces => N ===");
 			StressResultantTable nTable = NSolver.solve(myBeam,"N");
 
 			for (int n = 0; n <= nTable.getLength() - 1; n++) {
