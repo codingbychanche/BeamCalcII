@@ -1,7 +1,7 @@
 package org.berthold.beamCalc;
 
 /**
- * Contains the resulting forces at the bearings of an simply supported {@link Beam}.
+ * Contains result a simply supported {@link Beam}.
  * 
  * If errors (e.g. load outside of beam length) occur, an {@link Error} object is
  * added which contains a description of the problem.
@@ -19,8 +19,12 @@ public class BeamResult {
 	private double resultingForceAtLeftBearing_N, resultingForceAtRightBearing_N, sumOfHorizontalForcesIn_N;
 	private String solutionTermForRightBearing,solutionTermForLeftBearing,solutionTermForHorizontalForces;
 	
+	/**
+	 * Creates a new result.
+	 * 
+	 */
 	public BeamResult() {
-		error = new ArrayList<BeamCalcError>();
+		this.error = new ArrayList<>();
 	}
 
 	public void addError(BeamCalcError error) {
@@ -59,6 +63,7 @@ public class BeamResult {
 		this.sumOfHorizontalForcesIn_N = sumOfHorizontalForces;
 	}
 	
+
 	/**
 	 * Adds the solution term for the sum of the horizonztal force.
 	 * 

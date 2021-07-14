@@ -91,7 +91,7 @@ public class MainBeamCalculator {
 					System.out.println("x=" + r.getX_m() + " m   M=" + r.getShearingForce()+" "+r.getUnit());
 			
 			List <StressResultant> dis=new ArrayList<>();
-			dis=qTable.getDisconuitys();
+			dis=qTable.getDiscontinuitys();
 			System.out.println("Points of disconuity in Q");
 			for (StressResultant r:dis) 
 					System.out.println("x=" + r.getX_m() + " m   M=" + r.getShearingForce()+" "+r.getUnit());
@@ -112,7 +112,7 @@ public class MainBeamCalculator {
 			for (StressResultant r:maxima) 
 					System.out.println("x=" + r.getX_m() + " m   M=" + r.getShearingForce()+" "+r.getUnit());
 
-			dis=mTable.getDisconuitys();
+			dis=mTable.getDiscontinuitys();
 			System.out.println("Points of disconuity in M");
 			for (StressResultant r:dis) 
 					System.out.println("x=" + r.getX_m() + " m   M=" + r.getShearingForce()+" "+r.getUnit());

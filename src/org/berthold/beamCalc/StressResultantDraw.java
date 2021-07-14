@@ -43,23 +43,16 @@ public class StressResultantDraw {
 	/**
 	 * Creates a new image.
 	 * 
-	 * @param name
-	 *            File name.
-	 * @param beam
-	 *            The asociated {@link Beam}- object.
-	 * @param stressResultants
-	 *            The stress resultants to be drawn (
-	 *            {@link StressResultantTable}).
-	 * @param height_px
-	 *            Height of the image in pixels.
-	 * @param width_px
-	 *            The width of the image in pixels.
-	 * @param padX_px
-	 *            Padding in pixels at the left and right side of the image.
-	 * @param padY_px
-	 *            Padding in pixels at the top and bottom of the image.
-	 * @param numberFormat
-	 *            Number format... (e.g. %.2f = two decimal places).
+	 * @param name             File name.
+	 * @param beam             The asociated {@link Beam}- object.
+	 * @param stressResultants The stress resultants to be drawn (
+	 *                         {@link StressResultantTable}).
+	 * @param height_px        Height of the image in pixels.
+	 * @param width_px         The width of the image in pixels.
+	 * @param padX_px          Padding in pixels at the left and right side of the
+	 *                         image.
+	 * @param padY_px          Padding in pixels at the top and bottom of the image.
+	 * @param numberFormat     Number format... (e.g. %.2f = two decimal places).
 	 */
 	public StressResultantDraw(String name, Beam beam, StressResultantTable stressResultants, int height_px,
 			int width_px, int padX_px, int padY_px, String numberFormat) {
@@ -102,10 +95,10 @@ public class StressResultantDraw {
 			BufferedImage himg = new BufferedImage(width_px, height_px, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D hg = himg.createGraphics();
 
-			paddingRight_px = getWidthOfStringIn_px(rightSupportName + " " +rightSupportX+"m", hg);
+			paddingRight_px = getWidthOfStringIn_px(rightSupportName + " " + rightSupportX + "m", hg);
 
 			// This is the image used by the renderer
-			BufferedImage img = new BufferedImage(width_px + paddingRight_px+padX_px,
+			BufferedImage img = new BufferedImage(width_px + paddingRight_px + padX_px,
 					height_px + PADDING_TOP_PX + PADDING_BOTTOM_PX, BufferedImage.TYPE_INT_ARGB);
 
 			// Grab the graphics object off the image
@@ -154,7 +147,7 @@ public class StressResultantDraw {
 				graphics.drawLine((int) getXT(x), (int) getYT(y), (int) getXT(x), (int) getYT(y));
 
 				String shFormated;
-				if (r.isDiscontiunuity() ) {
+				if (r.isDiscontiunuity()) {
 					graphics.setColor(Color.GRAY);
 					graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x), height_px - padY_px + PADDING_TOP_PX);
 
@@ -187,8 +180,7 @@ public class StressResultantDraw {
 	/**
 	 * Transforms a y- koordinate.
 	 * 
-	 * @param y
-	 *            y- koordinate
+	 * @param y y- koordinate
 	 * @return Transformed y- koordinate.
 	 */
 	private double getYT(double y) {
@@ -214,9 +206,9 @@ public class StressResultantDraw {
 	/**
 	 * Display width of a string in pixels.
 	 * 
-	 * @param string
-	 * @param g
-	 *            Associated {@ling Graphics} object.
+	 * @param string The string containing the text of which the width in pixels to
+	 *               be determined.
+	 * @param g      Associated {@link Graphics2D} object.
 	 * @return Width of string in pixels.
 	 */
 	private int getWidthOfStringIn_px(String string, Graphics g) {
@@ -224,16 +216,12 @@ public class StressResultantDraw {
 		return f.stringWidth(string);
 	}
 
-	//
-	// GFX settings
-	//
 	/**
 	 * Adds rendering hints for the graphics display.
 	 * 
-	 * @param graphics
-	 *            The {@Graphics2D}- object to which the rendering settings are
-	 *            to be added.
-	 * @return The {@Graphics2D}- object containing the new rendering settings.
+	 * @param graphics The {@link Graphics2D}- object to which the rendering
+	 *                 settings are to be added.
+	 * @return The {@link Graphics2D}- object containing the new rendering settings.
 	 */
 	private Graphics2D assignRenderingHints(Graphics2D graphics) {
 		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

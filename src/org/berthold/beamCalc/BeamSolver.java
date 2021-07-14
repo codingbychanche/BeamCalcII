@@ -80,7 +80,7 @@ public class BeamSolver {
 			result.addError(error);
 		}
 
-		// Prepeare string which will contain the term for the solution in
+		// Prepare string which will contain the term for the solution in
 		// detail.
 		String partOfMathTerm; // String holding current mathematical term.
 
