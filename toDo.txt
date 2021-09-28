@@ -1,0 +1,6 @@
+When a point load is acting directly on a support the stressresultants after that support are not calculated correctly.
+This does not affect the results for the supporting forces! They are correct!
+
+Unevenly distributed loads are supported for the correct calculation of the supporting forces but not yet for 
+the stress resultants....
+

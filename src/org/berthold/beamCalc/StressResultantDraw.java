@@ -136,6 +136,9 @@ public class StressResultantDraw {
 					(int) getYT(0) + Y_OFFSET_ANNOTATION);
 
 			// Draw stress resultants.
+			double xLast=stressResultantsTable.getShearingForceAtIndex(0).getX_m();
+			double yLast=stressResultantsTable.getShearingForceAtIndex(0).getShearingForce();
+			
 			for (StressResultant r : stressResultantsTable.sfValues) {
 
 				// Transform
@@ -144,21 +147,22 @@ public class StressResultantDraw {
 
 				// The graph
 				graphics.setColor(Color.RED);
-				graphics.drawLine((int) getXT(x), (int) getYT(y), (int) getXT(x), (int) getYT(y));
+				graphics.drawLine((int) getXT(xLast), (int) getYT(yLast), (int) getXT(x), (int) getYT(y));
 
 				String shFormated;
+				
 				if (r.isDiscontiunuity()) {
+					/*
 					graphics.setColor(Color.GRAY);
 					graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x), height_px - padY_px + PADDING_TOP_PX);
-
+					*/
 					Color c = new Color(100, 0, 0);
 					graphics.setColor(c);
 
 					shFormated = String.format(numberFormat, r.getShearingForce());
 					graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
-
 				}
-
+				
 				if (r.isMaxima()) {
 					graphics.setColor(Color.BLUE);
 					graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x), height_px - padY_px + PADDING_TOP_PX);
@@ -166,6 +170,9 @@ public class StressResultantDraw {
 					shFormated = String.format(numberFormat, r.getShearingForce());
 					graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
 				}
+			
+				yLast=y;
+				xLast=x;
 			}
 
 			// Save to file.

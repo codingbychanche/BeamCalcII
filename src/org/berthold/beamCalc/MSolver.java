@@ -63,7 +63,7 @@ public class MSolver {
 			// }
 
 			m_Nm = mTable.getShearingForceAtIndex(n).getShearingForce();
-			mTable.getShearingForceAtIndex(n + 1).setShearingForce(m_Nm + deltaM_Nm);
+			mTable.getShearingForceAtIndex(n+1).setShearingForce(m_Nm + deltaM_Nm);
 
 			// Check for zero points in Q(x). Zero points are local
 			// maxima in M(x).
@@ -73,9 +73,10 @@ public class MSolver {
 			// Check for disconuinity in Q(x) because
 			// M(x) must also be a diconuinity or a local maxima/ minima
 			if (qTable.getShearingForceAtIndex(n).isDiscontiunuity()) {
-				if (!mTable.getShearingForceAtIndex(n).isMaxima())
+				if (!mTable.getShearingForceAtIndex(n).isMaxima()){
 					mTable.getShearingForceAtIndex(n).setDiscontiunuity(true);
 				mTable.getShearingForceAtIndex(n).setShearingForceDeltaBy(m_Nm + deltaM_Nm);
+				}
 			}
 
 			// Next
