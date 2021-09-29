@@ -43,16 +43,23 @@ public class StressResultantDraw {
 	/**
 	 * Creates a new image.
 	 * 
-	 * @param name             File name.
-	 * @param beam             The asociated {@link Beam}- object.
-	 * @param stressResultants The stress resultants to be drawn (
-	 *                         {@link StressResultantTable}).
-	 * @param height_px        Height of the image in pixels.
-	 * @param width_px         The width of the image in pixels.
-	 * @param padX_px          Padding in pixels at the left and right side of the
-	 *                         image.
-	 * @param padY_px          Padding in pixels at the top and bottom of the image.
-	 * @param numberFormat     Number format... (e.g. %.2f = two decimal places).
+	 * @param name
+	 *            File name.
+	 * @param beam
+	 *            The asociated {@link Beam}- object.
+	 * @param stressResultants
+	 *            The stress resultants to be drawn (
+	 *            {@link StressResultantTable}).
+	 * @param height_px
+	 *            Height of the image in pixels.
+	 * @param width_px
+	 *            The width of the image in pixels.
+	 * @param padX_px
+	 *            Padding in pixels at the left and right side of the image.
+	 * @param padY_px
+	 *            Padding in pixels at the top and bottom of the image.
+	 * @param numberFormat
+	 *            Number format... (e.g. %.2f = two decimal places).
 	 */
 	public StressResultantDraw(String name, Beam beam, StressResultantTable stressResultants, int height_px,
 			int width_px, int padX_px, int padY_px, String numberFormat) {
@@ -78,11 +85,21 @@ public class StressResultantDraw {
 
 		// Constants for the gfx- window
 		y0_px = (height_px / 2) + PADDING_TOP_PX;
+		xMax = stressResultantsTable.getAbsMaxX();
+
 		yMax = stressResultantsTable.getAbsMax();
 		yMin = stressResultantsTable.getAbsMin();
-		xMax = stressResultantsTable.getAbsMaxX();
+
+		// We want the zero pont of our diagram in the middle
+		// of the gfx- window. Positive part and negative part
+		// must be equal in high.
+		if (Math.abs(yMax) > Math.abs(yMin))
+			yMin = yMax * -1;
+		else
+			yMax = yMin * -1;
 	}
 
+	// Let's draw!
 	public void draw() {
 		try {
 			// Create an in memory Image
@@ -136,9 +153,9 @@ public class StressResultantDraw {
 					(int) getYT(0) + Y_OFFSET_ANNOTATION);
 
 			// Draw stress resultants.
-			double xLast=stressResultantsTable.getShearingForceAtIndex(0).getX_m();
-			double yLast=stressResultantsTable.getShearingForceAtIndex(0).getShearingForce();
-			
+			double xLast = stressResultantsTable.getShearingForceAtIndex(0).getX_m();
+			double yLast = stressResultantsTable.getShearingForceAtIndex(0).getShearingForce();
+
 			for (StressResultant r : stressResultantsTable.sfValues) {
 
 				// Transform
@@ -150,29 +167,38 @@ public class StressResultantDraw {
 				graphics.drawLine((int) getXT(xLast), (int) getYT(yLast), (int) getXT(x), (int) getYT(y));
 
 				String shFormated;
-				
-				if (r.isDiscontiunuity()) {
+
+				/*
+				if (r.isDiscontiunuity() && r.isMaxima()) {
+						graphics.setColor(Color.GRAY);
+						graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x),
+								height_px - padY_px + PADDING_TOP_PX);
+						graphics.setColor(Color.RED);
+						shFormated = String.format(numberFormat, r.getShearingForce());
+						graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
+				} else {
+					if (r.isMaxima()) {
+						graphics.setColor(Color.BLUE);
+						graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x), height_px - padY_px + PADDING_TOP_PX);
+						shFormated = String.format(numberFormat, r.getShearingForce());
+						graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
+					}
+				}
+				*/
+				if (r.isDiscontiunuity()|| r.isMaxima() || r.isZeroPoint()) {
 					/*
 					graphics.setColor(Color.GRAY);
-					graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x), height_px - padY_px + PADDING_TOP_PX);
-					*/
-					Color c = new Color(100, 0, 0);
-					graphics.setColor(c);
-
+					graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x),
+							height_px - padY_px + PADDING_TOP_PX);
+							*/
+					graphics.setColor(Color.RED);
 					shFormated = String.format(numberFormat, r.getShearingForce());
 					graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
-				}
+			}
+
 				
-				if (r.isMaxima()) {
-					graphics.setColor(Color.BLUE);
-					graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x), height_px - padY_px + PADDING_TOP_PX);
-
-					shFormated = String.format(numberFormat, r.getShearingForce());
-					graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
-				}
-			
-				yLast=y;
-				xLast=x;
+				yLast = y;
+				xLast = x;
 			}
 
 			// Save to file.
@@ -187,7 +213,8 @@ public class StressResultantDraw {
 	/**
 	 * Transforms a y- koordinate.
 	 * 
-	 * @param y y- koordinate
+	 * @param y
+	 *            y- koordinate
 	 * @return Transformed y- koordinate.
 	 */
 	private double getYT(double y) {
@@ -213,9 +240,11 @@ public class StressResultantDraw {
 	/**
 	 * Display width of a string in pixels.
 	 * 
-	 * @param string The string containing the text of which the width in pixels to
-	 *               be determined.
-	 * @param g      Associated {@link Graphics2D} object.
+	 * @param string
+	 *            The string containing the text of which the width in pixels to
+	 *            be determined.
+	 * @param g
+	 *            Associated {@link Graphics2D} object.
 	 * @return Width of string in pixels.
 	 */
 	private int getWidthOfStringIn_px(String string, Graphics g) {
@@ -226,9 +255,11 @@ public class StressResultantDraw {
 	/**
 	 * Adds rendering hints for the graphics display.
 	 * 
-	 * @param graphics The {@link Graphics2D}- object to which the rendering
-	 *                 settings are to be added.
-	 * @return The {@link Graphics2D}- object containing the new rendering settings.
+	 * @param graphics
+	 *            The {@link Graphics2D}- object to which the rendering settings
+	 *            are to be added.
+	 * @return The {@link Graphics2D}- object containing the new rendering
+	 *         settings.
 	 */
 	private Graphics2D assignRenderingHints(Graphics2D graphics) {
 		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

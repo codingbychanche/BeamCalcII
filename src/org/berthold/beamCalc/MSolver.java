@@ -78,10 +78,12 @@ public class MSolver {
 				mTable.getShearingForceAtIndex(n).setShearingForceDeltaBy(m_Nm + deltaM_Nm);
 				}
 			}
-
 			// Next
 			x = x + sectionLength_m / (1 / sectionLength_m);
 		}
+		
+		mTable.getShearingForceAtIndex(mTable.getLength()-1).setShearingForce(0);
+		mTable.getShearingForceAtIndex(mTable.getLength()-1).setZeroPoint(true);
 		return mTable;
 	}
 }
