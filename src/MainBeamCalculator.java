@@ -19,12 +19,12 @@ public class MainBeamCalculator {
 
 		// Create a new beam
 		Beam myBeam = new Beam(4);
-		myBeam.addBearing(new Support("A (Left)", 0, Support.ROLLER_SUPPORT));
+		myBeam.addBearing(new Support("A (Left)", 1.5, Support.ROLLER_SUPPORT));
 		myBeam.addBearing(new Support("B (Right)", 4, Support.PIN_SUPPORT));
 		
 		// Add load
 		// NAME/ Force/ Distance/ Angle /Length
-		myBeam.addLoad(new Load("F1", -2.0, 2, 45, 0));
+		myBeam.addLoad(new Load("F1", -2.0, 2, 10, 0));
 		myBeam.addLoad(new Load("q1", -5, 0, 0,4));
 
 		// Show beam info
