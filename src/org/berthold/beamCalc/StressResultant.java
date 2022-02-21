@@ -77,7 +77,7 @@ public class StressResultant {
 	/**
 	 * Adds an arbitrary value to this stress resltant value.
 	 * 
-	 * @param value Sheraing force to be added to this value.
+	 * @param value Shearing force to be added to this value.
 	 */
 	public void addValue(double value) {
 		this.stressResultantValue = this.stressResultantValue + value;
@@ -102,7 +102,6 @@ public class StressResultant {
 	}
 
 	/**
-	 * 
 	 * Repleaces the current value of this stress resultant with the new one.
 	 * 
 	 * @param shearingForceValue New value for this stress resultant.

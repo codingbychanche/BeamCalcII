@@ -109,7 +109,8 @@ public class StressResultantTable {
 
 				q.setName(l.getName());
 				q.setDiscontiunuity(true);
-				q.setShearingForce(force_N);
+				q.addValue(force_N);
+				//q.setShearingForce(force_N);
 				q.setX_m(x_m);
 			}
 			n++;

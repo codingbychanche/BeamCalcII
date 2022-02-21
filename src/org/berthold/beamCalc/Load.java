@@ -26,7 +26,7 @@ package org.berthold.beamCalc;
  * at 0 deg.
  * <p>
  *
- * @author Berthold
+ * @author Berthold<p>
  * 
  *         ToDo: There is no constructor included yet, which allows to add a
  *         single load. If one want's to do so, the length of the line load and
