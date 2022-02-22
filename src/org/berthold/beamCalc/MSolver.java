@@ -44,6 +44,8 @@ public class MSolver {
 		double sectionLength_m = mTable.getSectionLength_m();
 		double x = 0;
 
+		mTable.getShearingForceAtIndex(0).setMaxima(true);
+		
 		for (int n = 0; n <= qTable.getLength() - 2; n++) {
 
 			q_N = qTable.getShearingForceAtIndex(n).getShearingForce();
@@ -51,19 +53,12 @@ public class MSolver {
 			q1_N = qTable.getShearingForceAtIndex(n + 1).getShearingForce();
 			double deltaQ_N = q1_N - q_N;
 
-			// Checks if leading sign changes or if there is an discontiunuity
-			// if so, disregard....
-			// if (Math.signum(q_N) == Math.signum(q1_N) && Math.abs(deltaQ_N)
-			// <= DISCONTIUNUITY_THRESHOLD) {
 			m_Nm = q_N * x;
 			m1_Nm = q1_N * (x + sectionLength_m);
 			deltaM_Nm = m1_Nm - m_Nm;
-			// } else {
-
-			// }
 
 			m_Nm = mTable.getShearingForceAtIndex(n).getShearingForce();
-			mTable.getShearingForceAtIndex(n+1).setShearingForce(m_Nm + deltaM_Nm);
+			mTable.getShearingForceAtIndex(n + 1).setShearingForce(m_Nm + deltaM_Nm);
 
 			// Check for zero points in Q(x). Zero points are local
 			// maxima in M(x).
@@ -72,18 +67,20 @@ public class MSolver {
 
 			// Check for disconuinity in Q(x) because
 			// M(x) must also be a diconuinity or a local maxima/ minima
-			if (qTable.getShearingForceAtIndex(n).isDiscontiunuity()) {
-				if (!mTable.getShearingForceAtIndex(n).isMaxima()){
-					mTable.getShearingForceAtIndex(n).setDiscontiunuity(true);
+			if (qTable.getShearingForceAtIndex(n).isDiscontiunuity() && !mTable.getShearingForceAtIndex(n).isMaxima()) {
+				mTable.getShearingForceAtIndex(n).setDiscontiunuity(true);
 				mTable.getShearingForceAtIndex(n).setShearingForceDeltaBy(m_Nm + deltaM_Nm);
-				}
 			}
+			
+			if (Math.signum(mTable.getShearingForceAtIndex(n).getShearingForce()) != Math.signum(mTable.getShearingForceAtIndex(n+1).getShearingForce()))
+				mTable.getShearingForceAtIndex(n).setZeroPoint(true);
+
 			// Next
 			x = x + sectionLength_m / (1 / sectionLength_m);
 		}
-		
-		mTable.getShearingForceAtIndex(mTable.getLength()-1).setShearingForce(0);
-		mTable.getShearingForceAtIndex(mTable.getLength()-1).setZeroPoint(true);
+
+		mTable.getShearingForceAtIndex(mTable.getLength() - 1).setShearingForce(0);
+		mTable.getShearingForceAtIndex(mTable.getLength() - 1).setZeroPoint(true);
 		return mTable;
 	}
 }

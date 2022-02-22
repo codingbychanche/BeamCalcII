@@ -168,35 +168,11 @@ public class StressResultantDraw {
 
 				String shFormated;
 
-				/*
-				if (r.isDiscontiunuity() && r.isMaxima()) {
-						graphics.setColor(Color.GRAY);
-						graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x),
-								height_px - padY_px + PADDING_TOP_PX);
-						graphics.setColor(Color.RED);
-						shFormated = String.format(numberFormat, r.getShearingForce());
-						graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
-				} else {
-					if (r.isMaxima()) {
-						graphics.setColor(Color.BLUE);
-						graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x), height_px - padY_px + PADDING_TOP_PX);
-						shFormated = String.format(numberFormat, r.getShearingForce());
-						graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
-					}
-				}
-				*/
 				if (r.isDiscontiunuity()|| r.isMaxima() || r.isZeroPoint()) {
-					/*
-					graphics.setColor(Color.GRAY);
-					graphics.drawLine((int) getXT(x), padY_px, (int) getXT(x),
-							height_px - padY_px + PADDING_TOP_PX);
-							*/
 					graphics.setColor(Color.RED);
 					shFormated = String.format(numberFormat, r.getShearingForce());
 					graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
 			}
-
-				
 				yLast = y;
 				xLast = x;
 			}

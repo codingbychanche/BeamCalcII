@@ -19,12 +19,12 @@ public class MainBeamCalculator {
 
 		// Create a new beam
 		Beam myBeam = new Beam(4);
-		myBeam.addBearing(new Support("A (Left)", 0, Support.ROLLER_SUPPORT));
-		myBeam.addBearing(new Support("B (Right)", 4, Support.PIN_SUPPORT));
+		myBeam.addBearing(new Support("A (Left)", 1, Support.ROLLER_SUPPORT));
+		myBeam.addBearing(new Support("B (Right)", 3, Support.PIN_SUPPORT));
 		
 		// Add load
 		// NAME/ Force/ Distance/ Angle /Length
-		myBeam.addLoad(new Load("F1", -2.0, 1.5, 0, 0));
+		myBeam.addLoad(new Load("F1", -2.0, 2, 0, 0));
 		myBeam.addLoad(new Load("q1", -5, 0, 0,4));
 
 
@@ -89,6 +89,12 @@ public class MainBeamCalculator {
 			for (StressResultant r:dis) 
 					System.out.println("x=" + r.getX_m() + " m   Q=" + r.getShearingForce()+" "+r.getUnit());
 			
+			List <StressResultant> zero=new ArrayList<>();
+			zero=qTable.getZeroPoints();
+			System.out.println("Zero points in Q");
+			for (StressResultant r:zero) 
+					System.out.println("x=" + r.getX_m() + " m");
+			
 			StressResultantDraw d=new StressResultantDraw("Q",myBeam,qTable,600,1200,10,10,"%.2f");
 			d.draw();
 
@@ -110,6 +116,12 @@ public class MainBeamCalculator {
 			for (StressResultant r:dis) 
 					System.out.println("x=" + r.getX_m() + " m   M=" + r.getShearingForce()+" "+r.getUnit());
 		
+		    zero=new ArrayList<>();
+			zero=mTable.getZeroPoints();
+			System.out.println("Zero points in M");
+			for (StressResultant r:zero) 
+					System.out.println("x=" + r.getX_m() + " m");
+			
 			StressResultantDraw m=new StressResultantDraw("M",myBeam,mTable,600,1200,10,10,"%.2f");
 			m.draw();
 	
