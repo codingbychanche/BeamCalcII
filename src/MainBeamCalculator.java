@@ -25,6 +25,7 @@ public class MainBeamCalculator {
 		// Add load
 		// NAME/ Force/ Distance/ Angle /Length
 		myBeam.addLoad(new Load("F1", -2.0, 2, 0, 0));
+		myBeam.addLoad(new Load("F1", -2.0, 3, 45, 0));
 		myBeam.addLoad(new Load("q1", -5, 0, 0,4));
 
 

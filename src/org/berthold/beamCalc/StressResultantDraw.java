@@ -6,14 +6,15 @@ import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-
 import javax.imageio.ImageIO;
 
+import gfxNonOverlapping.RectArea;
+import gfxNonOverlapping.Rectangles;
 /**
  * Draws the graphical representation from a {@link StressResultantTable}.
  * 
@@ -39,7 +40,13 @@ public class StressResultantDraw {
 	private final int PADDING_TOP_PX = 20; // A constant enabeling text at the
 											// top of the diagram to be seen....
 	private final int PADDING_BOTTOM_PX = 20;
+	
+	// Legend
+	private Color colorMaxima=Color.BLUE;
+	private Color colorDis=Color.GRAY;
+	private Color colorZero=Color.MAGENTA;
 
+	 
 	/**
 	 * Creates a new image.
 	 * 
@@ -99,7 +106,9 @@ public class StressResultantDraw {
 			yMax = yMin * -1;
 	}
 
-	// Let's draw!
+	/**
+	 * Draws the stress resultants diagram.
+	 */
 	public void draw() {
 		try {
 			// Create an in memory Image
@@ -121,6 +130,11 @@ public class StressResultantDraw {
 			// Grab the graphics object off the image
 			Graphics2D graphics = img.createGraphics();
 			graphics = assignRenderingHints(graphics);
+			
+			// This takes care that text drawn does not overlap.
+			// Each rectangular, bounding box added to this instance
+			// will be shifted if it overlaps any other object in it's list.
+			Rectangles rectangles=new Rectangles (height_px,width_px);
 
 			// Draw background
 			Color c1 = new Color(255, 255, 255); // Gradient start color
@@ -138,16 +152,42 @@ public class StressResultantDraw {
 			// Datum
 			graphics.drawLine(padX_px, y0_px + PADDING_TOP_PX, width_px - padX_px, y0_px + PADDING_TOP_PX);
 
+			// Legend
+			Rectangle2D b;
+			String dis="Disconiuity";
+			b=getStringBounds(dis,graphics);
+			RectArea rect=new RectArea(0,10,(int)b.getWidth(),(int)b.getHeight());
+			graphics.setColor(colorDis);
+			rect=rectangles.add(rect);
+			graphics.drawString(dis, rect.getX(),rect.getY());
+			
+			String zero="Zero Points";
+			b=getStringBounds(dis,graphics);
+			rect=new RectArea(0,0,(int)b.getWidth(),(int)b.getHeight());
+			rect=rectangles.add(rect);
+			graphics.setColor(colorZero);
+			graphics.drawString(zero, rect.getX(),rect.getY());
+			
+			String maxi="Maxima";
+			b=getStringBounds(dis,graphics);
+			rect=new RectArea(0,0,(int)b.getWidth(),(int)b.getHeight());
+			rect=rectangles.add(rect);
+			graphics.setColor(colorMaxima);
+			graphics.drawString(maxi, rect.getX(),rect.getY());
+			
 			// Supports
+			graphics.setColor(Color.BLACK);
 			String dimFormated;
 			int xTLeft = (int) getXT(leftSupportX);
 			graphics.drawLine(xTLeft, (int) padY_px, xTLeft, (int) height_px - padY_px + PADDING_TOP_PX);
+			
 			dimFormated = String.format(numberFormat, leftSupportX);
 			graphics.drawString(leftSupportName + " " + dimFormated + " m", xTLeft,
 					(int) getYT(0) + Y_OFFSET_ANNOTATION);
 
 			int xTRight = (int) getXT(rightSupportX);
 			graphics.drawLine(xTRight, (int) padY_px, xTRight, (int) height_px - padY_px + PADDING_TOP_PX);
+			
 			dimFormated = String.format(numberFormat, rightSupportX);
 			graphics.drawString(rightSupportName + " " + dimFormated + " m", xTRight,
 					(int) getYT(0) + Y_OFFSET_ANNOTATION);
@@ -169,9 +209,21 @@ public class StressResultantDraw {
 				String shFormated;
 
 				if (r.isDiscontiunuity()|| r.isMaxima() || r.isZeroPoint()) {
-					graphics.setColor(Color.RED);
+					
+					if (r.isMaxima())
+						graphics.setColor(colorMaxima); 
+					if(r.isDiscontiunuity())
+						graphics.setColor(colorDis);
+					if (r.isZeroPoint())
+						graphics.setColor(colorZero); 
+					
 					shFormated = String.format(numberFormat, r.getShearingForce());
-					graphics.drawString(shFormated + " " + r.getUnit(), (int) getXT(x), (int) getYT(y));
+					
+					Rectangle2D bounds=getStringBounds(shFormated+" "+r.getUnit(),graphics);
+				
+					RectArea a=new RectArea ((int)getXT(x),(int)getYT(y),(int)bounds.getWidth(),(int)bounds.getHeight());
+					a=rectangles.add(a);
+					graphics.drawString(shFormated+" "+r.getUnit(),a.getX(),a.getY());
 			}
 				yLast = y;
 				xLast = x;
@@ -226,6 +278,18 @@ public class StressResultantDraw {
 	private int getWidthOfStringIn_px(String string, Graphics g) {
 		FontMetrics f = g.getFontMetrics();
 		return f.stringWidth(string);
+	}
+	
+	/**
+	 * Gets the bouding box of a string.
+	 * 
+	 * @param string The string.
+	 * @param g	Graphics context.
+	 * @return A {@link Rectangle2D} object containing the strings bounds.
+	 */
+	private Rectangle2D getStringBounds(String string, Graphics g) {
+		FontMetrics f = g.getFontMetrics();
+		return f.getStringBounds(string, g);
 	}
 
 	/**
